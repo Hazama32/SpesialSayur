@@ -25,3 +25,10 @@ body {
     text-wrap: balance;
   }
 }
+
+.input {
+  @apply w-full p-2 rounded border;
+}
+.btn {
+  @apply bg-green-500 text-white px-4 py-2 rounded;
+}
