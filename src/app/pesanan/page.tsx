@@ -1,3 +1,4 @@
+import HeaderSection from '@/components/HeaderSection'
 export const metadata = {
   title: 'Pesanan | SpesialSayur',
 }
@@ -11,8 +12,8 @@ export default async function PesananPage() {
   const pesanans = json.data
 
   return (
-    <div className="p-4">
-      <h1 className="text-lg font-bold mb-4">Daftar Pesanan</h1>
+    <div className="min-h-screen bg-gray-300">
+      <HeaderSection title="Daftar Pesanan" toHome={false} />
         {pesanans && pesanans.length > 0 ? (
           pesanans.map((item: any) => (
         <div key={item.id} className="border p-2 mb-2 rounded">
