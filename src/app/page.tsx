@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import ProductCard from '@/components/ProductCard'
 
 type ProductItem = {
+  slug: string
   id: number
   nama_produk: string
   kategori: {
@@ -107,7 +108,7 @@ export default function HomePage() {
       </div>
 
       {/* PRODUK */}
-      <div className="p-4 grid grid-cols-2 gap-4 text-black">
+      <div className="p-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-black">
         {filteredProducts.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}

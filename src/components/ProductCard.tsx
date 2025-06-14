@@ -6,6 +6,7 @@ type ProductCardProps = {
     id: number;
     nama_produk: string;
     harga_kiloan: string;
+    slug: string;
     gambar: { url: string }[];
   }
 }
@@ -17,7 +18,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     'https://spesialsayurdb-production.up.railway.app' + (product.gambar[0]?.url || '')
 
   const handleCardClick = () => {
-    router.push(`/produk/${product.id}`)
+    router.push(`/produk/${product.slug}`)
   }
 
  const handleAddToCart = async (e: React.MouseEvent) => {
@@ -45,7 +46,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     }
 
     // Sukses: pindah ke detail
-    router.push(`/produk/${product.id}`)
+    router.push(`/produk/${product.slug}`)
   } catch (error) {
     console.error('Gagal koneksi ke server:', error)
     alert('Tidak bisa menghubungi server.')
@@ -65,7 +66,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       <div className="p-2">
         <h2 className="text-sm font-medium">{product.nama_produk}</h2>
         <p className="text-green-600 font-semibold text-sm">
-          Rp {product.harga_kiloan} / gram
+          Rp {product.harga_kiloan} / kilo
         </p>
       </div>
       <button
