@@ -3,6 +3,7 @@ import { CreditCard, Wallet, Heart, MapPin, HelpCircle, Settings, Package } from
 import Image from 'next/image'
 import HeaderSection from '@/components/HeaderSection'
 import MenuItem from '@/components/MenuItem'
+import Link from 'next/link'
 
 export default function AccountPage() {
 
@@ -26,14 +27,18 @@ export default function AccountPage() {
       <div className="bg-white mt-3 p-4 shadow-sm">
         <h2 className="font-medium mb-3 text-gray-700">Metode Pembayaran</h2>
         <div className="grid grid-cols-2 gap-4">
+          <Link href="/pembayaran">
           <div className="flex flex-col items-center">
-            <CreditCard className="w-6 h-6 text-green-600 mb-1" />
+            <CreditCard className="w-6 h-6 text-green-600 mb-1"/>
             <p className="text-sm text-center text-gray-800">Kartu Debit<br />atau Kredit</p>
           </div>
+          </Link>
+          <Link href="/pembayaran">
           <div className="flex flex-col items-center">
-            <Wallet className="w-6 h-6 text-green-600 mb-1" />
+            <Wallet className="w-6 h-6 text-green-600 mb-1"/>
             <p className="text-sm text-center text-gray-800">Tunai</p>
           </div>
+          </Link>
         </div>
       </div>
 

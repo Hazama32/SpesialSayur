@@ -3,10 +3,10 @@ import { useRouter } from 'next/navigation'
 
 type ProductCardProps = {
   product: {
-    id: number
-    nama_produk: string
-    harga_kiloan: string
-    gambar: { url: string }[]
+    id: number;
+    nama_produk: string;
+    harga_kiloan: string;
+    gambar: { url: string }[];
   }
 }
 

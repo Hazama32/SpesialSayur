@@ -62,9 +62,23 @@ export default function CategoryProductsPage({ params }: CategoryProductsPagePro
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-4">
-          {products.map((product) => (
-            <ProductCard key={product.id} id={product.id} product={product.attributes} />
-          ))}
+            {products.map((product: any) => {
+            const attr = product.attributes;
+            return (
+              <ProductCard
+                key={product.id}
+                product={{
+                  id: product.id,
+                  nama_produk: attr.nama_produk,
+                  harga_kiloan: attr.harga_kiloan,
+                  gambar:
+                    attr.gambar?.data?.map((img: any) => ({
+                      url: img.attributes.url,
+                    })) || [],
+                }}
+              />
+            );
+          })}
         </div>
       )}
     </div>

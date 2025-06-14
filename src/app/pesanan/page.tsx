@@ -12,14 +12,17 @@ export default async function PesananPage() {
 
   return (
     <div className="p-4">
-      <h1 className="text-lg font-bold mb-4">📦 Daftar Pesanan</h1>
-      {pesanans.map((item: any) => (
+      <h1 className="text-lg font-bold mb-4">Daftar Pesanan</h1>
+        {pesanans && pesanans.length > 0 ? (
+          pesanans.map((item: any) => (
         <div key={item.id} className="border p-2 mb-2 rounded">
           <p>Produk: {item.attributes.produk.data.attributes.nama}</p>
           <p>Status: {item.attributes.status}</p>
-          <p>Total: Rp {item.attributes.totalHarga}</p>
         </div>
-      ))}
+      ))
+    ) : (
+  <p className="text-center text-gray-500">Belum ada pesanan.</p>
+)}
     </div>
   )
 }
