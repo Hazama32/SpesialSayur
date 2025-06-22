@@ -189,7 +189,7 @@ export default function CartPage() {
           </ul>
 
           <div className="mt-4 border-t pt-4">
-            <p className="text-right font-bold text-lg">
+            <p className="text-right font-bold text-lg text-black">
               Total: Rp {Math.ceil(total).toLocaleString()}
             </p>
             <button className="w-full mt-4 bg-green-600 text-white py-2 rounded">
