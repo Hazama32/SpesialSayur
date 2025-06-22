@@ -1,40 +1,43 @@
 'use client'
+
 import { useEffect, useState } from 'react'
 import HeaderSection from '@/components/HeaderSection'
+
+type Produk = {
+  id: number
+  nama_produk: string
+  harga_kiloan: string
+  gambar: {
+    id: number
+    url: string
+  }[]
+}
+
+type ProdukPesanan = {
+  id: number
+  jumlah_pesanan: string
+  subtotal: string
+  produks: Produk
+}
+
 type CartItem = {
   id: number
-  attributes: {
-    qty: number
-    produk: {
-      data: {
-        id: number
-        attributes: {
-          nama: string
-          harga: number
-          gambar?: {
-            data?: {
-              attributes?: {
-                url: string
-              }
-            }
-          }
-        }
-      }
-    }
-  }
+  produk_pesanan: ProdukPesanan[]
 }
 
 export default function CartPage() {
-  const [items, setItems] = useState<CartItem[]>([])  // ✅ aman untuk reduce
+  const [items, setItems] = useState<ProdukPesanan[]>([])
   const [loading, setLoading] = useState(true)
 
-  // Ambil data dari Strapi
   useEffect(() => {
-    fetch('https://spesialsayurdb-production.up.railway.app/api/carts?populate=produk.gambar')
+    fetch(
+      'https://spesialsayurdb-production.up.railway.app/api/carts?populate[produk_pesanan][populate][produks][populate]=gambar'
+    )
       .then((res) => res.json())
       .then((data) => {
-        if (Array.isArray(data.data)) {
-          setItems(data.data)
+        if (Array.isArray(data.data) && data.data.length > 0) {
+          const cart = data.data[0] as CartItem
+          setItems(cart.produk_pesanan || [])
         }
         setLoading(false)
       })
@@ -44,24 +47,41 @@ export default function CartPage() {
       })
   }, [])
 
-  // Hapus item
-  const handleRemove = async (id: number) => {
-    const res = await fetch(`https://spesialsayurdb-production.up.railway.app/api/carts/${id}`, {
-      method: 'DELETE',
-    })
-
-    if (res.ok) {
-      setItems(items.filter((item) => item.id !== id))
-    } else {
-      alert('Gagal menghapus dari keranjang.')
-    }
+  const handleRemove = (id: number) => {
+    const updated = items.filter((item) => item.id !== id)
+    setItems(updated)
   }
 
-  // ✅ Perhitungan total
+  const handleChangeQty = (item: ProdukPesanan, newQty: number) => {
+    const minQty = 250
+    if (newQty < minQty) {
+      const confirmDelete = window.confirm(
+        'Jumlah minimal adalah 250 gram.\nApakah kamu ingin menghapus produk ini dari keranjang?'
+      )
+      if (confirmDelete) {
+        handleRemove(item.id)
+      }
+      return
+    }
+
+    const harga = parseInt(item.produks?.harga_kiloan || '0', 10)
+    const subtotal = (harga / 1000) * newQty
+
+    const updatedItems = items.map((i) =>
+      i.id === item.id
+        ? {
+            ...i,
+            jumlah_pesanan: String(newQty),
+            subtotal: String(subtotal),
+          }
+        : i
+    )
+
+    setItems(updatedItems)
+  }
+
   const total = items.reduce((sum, item) => {
-    const harga = item.attributes.produk?.data?.attributes?.harga || 0
-    const qty = item.attributes.qty || 1
-    return sum + harga * qty
+    return sum + parseFloat(item.subtotal || '0')
   }, 0)
 
   if (loading) {
@@ -70,8 +90,8 @@ export default function CartPage() {
 
   return (
     <div className="min-h-screen bg-gray-300">
-       <HeaderSection title="Pesanan" toHome={false} />
-     {items.length === 0 ? (
+      <HeaderSection title="Pesanan" toHome={false} />
+      {items.length === 0 ? (
         <div className="flex flex-col items-center justify-center mt-20">
           <img
             src="/icons/cart 3.png"
@@ -84,28 +104,85 @@ export default function CartPage() {
         <>
           <ul className="space-y-4 mb-6">
             {items.map((item) => {
-              const produk = item.attributes.produk?.data
-              const attr = produk?.attributes
-              const img = attr?.gambar?.data?.attributes?.url
-                ? `https://spesialsayurdb-production.up.railway.app${attr.gambar.data.attributes.url}`
-                : '/noimage.png'
+              const produk = item.produks
+              const img =
+                produk.gambar?.[0]?.url
+                  ? `https://spesialsayurdb-production.up.railway.app${produk.gambar[0].url}`
+                  : '/noimage.png'
 
               return (
-                <li key={item.id} className="flex items-center gap-4 border-b pb-2">
-                  <img src={img} alt={attr?.nama} className="w-16 h-16 object-cover rounded" />
-                  <div className="flex-1">
-                    <p className="font-semibold">{attr?.nama}</p>
-                    <p className="text-sm text-gray-600">Qty: {item.attributes.qty}</p>
-                    <p className="text-orange-600 text-sm">
-                      Rp {(attr?.harga * item.attributes.qty).toLocaleString()}
-                    </p>
-                  </div>
+                <li
+                  key={item.id}
+                  className="relative flex gap-4 p-4 border rounded bg-white shadow"
+                >
+                  {/* Tombol Hapus */}
                   <button
                     onClick={() => handleRemove(item.id)}
-                    className="text-sm text-red-500"
+                    className="absolute top-2 right-2 text-red-500 hover:text-red-700"
                   >
-                    Hapus
+                    ❌
                   </button>
+
+                  {/* Gambar */}
+                  <img
+                    src={img}
+                    alt={produk.nama_produk}
+                    className="h-24 w-24 object-cover rounded"
+                  />
+
+                  {/* Detail Produk */}
+                  <div className="flex-1 flex flex-col justify-between">
+                    <div>
+                      <h2 className="text-lg font-semibold">{produk.nama_produk}</h2>
+                      <p className="text-sm text-gray-600">Rp {produk.harga_kiloan} / kg</p>
+                    </div>
+
+                    <div className="mt-2 flex justify-between items-center">
+                      <div className="text-sm text-gray-700">
+                        <p>Jumlah: {item.jumlah_pesanan} gr</p>
+                        <p>Subtotal: Rp {Math.ceil(parseFloat(item.subtotal)).toLocaleString()}</p>
+                      </div>
+
+                      <div className="flex flex-col items-start">
+                      <div className="flex gap-2 flex-wrap mb-2">
+                        {[250, 500, 750, 1000].map((g) => (
+                          <button
+                            key={g}
+                            onClick={() => handleChangeQty(item, g)}
+                            className={`border px-3 py-1 rounded ${
+                              parseInt(item.jumlah_pesanan) === g
+                                ? 'bg-green-500 text-white'
+                                : 'bg-white text-gray-800'
+                            }`}
+                          >
+                            {g >= 1000 ? `${g / 1000} kg` : `${g} gr`}
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Input custom satuan kilo */}
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0.25"
+                          placeholder="Jumlah (kg)"
+                          className="border p-1 rounded w-28 text-sm"
+                          onChange={(e) => {
+                            const val = parseFloat(e.target.value)
+                            if (!isNaN(val) && val >= 0.25) {
+                              handleChangeQty(item, Math.round(val * 1000)) // convert to gram
+                            }
+                          }}
+                        />
+                        <span className="text-sm text-gray-600">kg</span>
+                      </div>
+
+                      <p className="text-xs text-gray-500 mt-1">Minimal 0.25 kg</p>
+                    </div>
+
+                    </div>
+                  </div>
                 </li>
               )
             })}
@@ -113,7 +190,7 @@ export default function CartPage() {
 
           <div className="mt-4 border-t pt-4">
             <p className="text-right font-bold text-lg">
-              Total: Rp {total.toLocaleString()}
+              Total: Rp {Math.ceil(total).toLocaleString()}
             </p>
             <button className="w-full mt-4 bg-green-600 text-white py-2 rounded">
               Lanjut ke Pembayaran
