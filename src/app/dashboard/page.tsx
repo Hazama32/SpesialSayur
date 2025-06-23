@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
-import ProductImage from '@/components/ProductImage'
+import ProductCard from '@/components/ProductCard'
+import { LogoutButton } from '@/components/LogoutButton'
 
 type ProductItem = {
   slug: string
@@ -46,7 +47,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-300">
-     {/* HEADER */}
+     {/* HEADER SAJA */}
       <div className="bg-green-600 text-white p-4 pt-4 mt-0 rounded-b-2xl">
         {/* Baris Logo + Login/Daftar */}
         <div className="flex justify-between items-center mb-2">
@@ -58,9 +59,7 @@ export default function HomePage() {
 
           {/* Tombol Login & Daftar */}
           <div className="flex gap-2">
-            <a href="/login" className="text-lg hover:underline">Login</a>
-            <span>|</span>
-            <a href="/register" className="text-lg hover:underline">Daftar</a>
+            <LogoutButton/>
           </div>
         </div>
 
@@ -90,10 +89,27 @@ export default function HomePage() {
         />
       </div>
 
+      {/* KATEGORI FILTER */}
+      <div className="mt-4 px-4 flex gap-2 overflow-x-auto">
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => setCategory(cat)}
+            className={`px-4 py-1 rounded-full whitespace-nowrap text-sm ${
+              category === cat
+                ? 'bg-green-800 text-white'
+                : 'bg-gray-200 text-gray-700'
+            }`}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
       {/* PRODUK */}
       <div className="p-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-black">
         {filteredProducts.map((product) => (
-          <ProductImage key={product.id} product={product} />
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
     </div>

@@ -72,7 +72,7 @@ export default function ProductDetailPage() {
   };
 
   const handleBackHome = () => {
-    router.push('/');
+    router.push('/dashboard');
   };
 
   return (
