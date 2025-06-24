@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import ProductCard from '@/components/ProductCard'
 import { LogoutButton } from '@/components/LogoutButton'
+import Navbar from '@/components/Navbar'
 
 type ProductItem = {
   slug: string
@@ -46,7 +47,8 @@ export default function HomePage() {
   const categories = ['All', 'Sayur', 'Buah']
 
   return (
-    <div className="min-h-screen bg-gray-300">
+    <div className="min-h-screen bg-gray-300 pb-16">
+      <Navbar />
      {/* HEADER SAJA */}
       <div className="bg-green-600 text-white p-4 pt-4 mt-0 rounded-b-2xl">
         {/* Baris Logo + Login/Daftar */}
