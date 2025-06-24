@@ -33,6 +33,9 @@ export async function registerUserAction(prevState: any, formData: FormData) {
     username: formData.get("username"),
     password: formData.get("password"),
     email: formData.get("email"),
+    alamat_pengiriman: formData.get("alamat_pengiriman"),
+    point: 0,
+    peringkat: "perunggu"
   });
 
   if (!validatedFields.success) {
@@ -64,10 +67,11 @@ export async function registerUserAction(prevState: any, formData: FormData) {
     };
   }
 
-  const cookieStore = await cookies();
-  cookieStore.set("jwt", responseData.jwt, config);
+  console.log(registerUserAction)
+  // const cookieStore = await cookies();
+  // cookieStore.set("jwt", responseData.jwt, config);
   
-  redirect("/dashboard");
+  // redirect("/dashboard");
 }
 
 const schemaLogin = z.object({

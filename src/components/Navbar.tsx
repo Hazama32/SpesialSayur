@@ -12,7 +12,7 @@ export default function Navbar() {
     { name: 'Notifikasi', href: '/notifikasi', icon: '/icons/notif.png' },
     { name: 'Favorit', href: '/favorit', icon: '/icons/favorit.png' },
     { name: 'Keranjang', href: '/cart', icon: '/icons/cart.png' },
-    { name: 'Akun', href: '/profile', icon: '/icons/akun.png' },
+    { name: 'Akun', href: '/profile', icon: '/icons/akun 2.png' },
   ]
 
   return (

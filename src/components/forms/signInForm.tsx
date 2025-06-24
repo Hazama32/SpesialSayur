@@ -60,13 +60,13 @@ export function SigninForm() {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col">
-            <button type="submit" className="w-full bg-green-300 py-2 round">Sign Up</button>
+            <button type="submit" className="w-full bg-green-300 py-2 round">Sign In</button>
             <StrapiErrors error={formState?.strapiErrors} />
           </CardFooter>
         </Card>
         <div className="mt-4 text-center text-sm">
           Don't have an account?
-          <Link className="underline ml-2" href="signup">
+          <Link className="underline ml-2" href="register">
             Sign Up
           </Link>
         </div>
