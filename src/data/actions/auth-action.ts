@@ -55,6 +55,7 @@ export async function updateUserProfileAfterRegister({
     }
   );
 
+  console.log(jwt)
   if (!res.ok) {
     console.error('[UPDATE USER ERROR]', await res.json());
     throw new Error('Gagal update profil user.');
@@ -108,7 +109,6 @@ export async function registerUserAction(prevState: any, formData: FormData) {
     kategori_user: formData.get('kategori_user') as string,
     alamat_pengiriman: formData.get('alamat_pengiriman') as string,
   });
-
 
   const cookieStore = await cookies();
   cookieStore.set("jwt", responseData.jwt, config);
