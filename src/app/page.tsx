@@ -108,40 +108,10 @@ export default function HomePage() {
         </div>
       {/* SPACER */}
       <div className="h-4" />
-      {/* CAROUSEL PROMO */}
-          <div className="px-4 mb-6">
-            <Swiper
-              modules={[Pagination, Autoplay]}
-              slidesPerView={1}
-              pagination={{ clickable: true }}
-              autoplay={{ delay: 3000 }}
-              loop={true}
-              className="rounded-lg"
-            >
-              <SwiperSlide>
-                <img src="/slide1.jpg" alt="Slide 1" className="h-60 w-full object-cover rounded-lg" />
-              </SwiperSlide>
-              <SwiperSlide>
-                <img src="/slide2.jpg" alt="Slide 2" className="h-60 w-full object-cover rounded-lg" />
-              </SwiperSlide>
-              <SwiperSlide>
-                <img src="/slide3.jpg" alt="Slide 3" className="h-60 w-full object-cover rounded-lg" />
-              </SwiperSlide>
-            </Swiper>
-          </div>
-      {/* BANNER PROMO */}
-      <div className="px-4">
-        <img
-          src="/banner.jpg"
-          alt="Banner Promo"
-          className="w-full h-40 object-cover rounded-lg shadow"
-        />
-      </div>
-
+      
       {/* SECTION: LATAR BELAKANG */}
       <section className="mt-8 px-6 text-center space-y-4">
         <h1 className='text-3xl font-bold text-green-700 mb-4 p-6'>Mengapa Harus Memilih Spesial Sayur?</h1>
-        <h2 className="text-2xl font-bold text-green-700 mb-4">Latar Belakang Spesial Sayur</h2>
         <p className="text-gray-700 leading-relaxed">
           Spesial Sayur hadir untuk mempermudah Anda mendapatkan sayuran dan buah segar dengan harga terjangkau.
           Kami bekerja sama dengan petani lokal dan pemasok terpercaya agar Anda selalu mendapatkan produk berkualitas terbaik.
