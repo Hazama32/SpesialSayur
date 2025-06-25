@@ -3,6 +3,10 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import ProductImage from '@/components/ProductImage'
 import { CheckCircle, Truck, ShoppingCart, BadgePercent, UserPlus, Handshake } from 'lucide-react'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { Pagination, Autoplay } from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/pagination'
 
 type ProductItem = {
   slug: string
@@ -52,35 +56,79 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-100 text-black">
-      {/* HEADER */}
-      <div className="bg-green-600 text-white p-4 pt-4 mt-0 rounded-b-2xl shadow-lg">
-        <div className="flex justify-between items-center mb-2">
+    {/* HEADER: Hanya Logo dan Login/Daftar */}
+        <div className="bg-green-600 text-white p-4 flex justify-between items-center shadow">
+          {/* Logo dan Nama Brand */}
           <div className="flex items-center gap-2">
-            <img src="/Logo 2.png" alt="Logo" className="w-16 h-16" />
+            <img src="/Logo 2.png" alt="Logo" className="w-12 h-12" />
             <h1 className="text-xl font-bold">Spesial Sayur</h1>
           </div>
 
-          <div className="flex gap-2">
-            <a href="/login" className="text-lg hover:underline">Login</a>
+          {/* Login dan Daftar */}
+          <div className="flex gap-2 text-sm">
+            <a href="/login" className="hover:underline">Login</a>
             <span>|</span>
-            <a href="/register" className="text-lg hover:underline">Daftar</a>
+            <a href="/register" className="hover:underline">Daftar</a>
           </div>
         </div>
 
-        <p className="text-lg mx-2">Selamat Datang di Spesial Sayur</p>
-
-        <div className="mt-3">
-          <input
-            type="text"
-            placeholder="Apa yang ingin anda butuhkan?"
-            className="w-full p-4 rounded-full shadow-lg text-black"
+        {/* GAMBAR HEADER + SAPAAN + SEARCH */}
+        <div className="relative w-full h-64 md:h-96 overflow-hidden">
+          <img
+            src="/header.jpg"
+            alt="Header Gambar"
+            className="w-full h-full object-cover"
           />
-        </div>
-      </div>
 
+          {/* Overlay Sapaan dan Slogan */}
+          <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center items-center text-center px-4">
+            <h1 className="text-2xl md:text-4xl font-bold text-white mb-2">
+              Selamat Datang di <span className="text-yellow-300">Spesial Sayur!</span>
+            </h1>
+            <p className="text-white text-lg md:text-xl italic mb-4">
+              "Belanja sayur segar mudah, cepat, dan hemat setiap hari."
+            </p>
+
+            {/* Search Icon */}
+            <div className="flex items-center bg-white rounded-full px-4 py-2 w-72 md:w-96 shadow">
+              <input
+                type="text"
+                placeholder="Cari produk..."
+                className="flex-1 outline-none text-black bg-transparent"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <button className="text-green-600">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
       {/* SPACER */}
       <div className="h-4" />
-
+      {/* CAROUSEL PROMO */}
+          <div className="px-4 mb-6">
+            <Swiper
+              modules={[Pagination, Autoplay]}
+              slidesPerView={1}
+              pagination={{ clickable: true }}
+              autoplay={{ delay: 3000 }}
+              loop={true}
+              className="rounded-lg"
+            >
+              <SwiperSlide>
+                <img src="/slide1.jpg" alt="Slide 1" className="h-60 w-full object-cover rounded-lg" />
+              </SwiperSlide>
+              <SwiperSlide>
+                <img src="/slide2.jpg" alt="Slide 2" className="h-60 w-full object-cover rounded-lg" />
+              </SwiperSlide>
+              <SwiperSlide>
+                <img src="/slide3.jpg" alt="Slide 3" className="h-60 w-full object-cover rounded-lg" />
+              </SwiperSlide>
+            </Swiper>
+          </div>
       {/* BANNER PROMO */}
       <div className="px-4">
         <img

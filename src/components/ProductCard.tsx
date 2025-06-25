@@ -1,6 +1,8 @@
 'use client'
+
 import { useRouter } from 'next/navigation'
 import { Heart } from 'lucide-react'
+import { MouseEvent } from 'react'
 
 type ProductCardProps = {
   product: {
@@ -22,7 +24,9 @@ export default function ProductCard({ product }: ProductCardProps) {
     router.push(`/produk/${product.slug}`)
   }
 
-  const handleAddToFavorite = async () => {
+  const handleAddToFavorite = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation()
+
     try {
       const res = await fetch('https://spesialsayurdb-production.up.railway.app/api/favorites', {
         method: 'POST',
@@ -34,21 +38,23 @@ export default function ProductCard({ product }: ProductCardProps) {
             produk: product.id,
           },
         }),
-      });
+      })
 
       if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error?.error?.message || 'Gagal menambahkan ke favorit');
+        const error = await res.json()
+        throw new Error(error?.error?.message || 'Gagal menambahkan ke favorit')
       }
 
-      alert('Produk berhasil ditambahkan ke favorit!');
+      alert('Produk berhasil ditambahkan ke favorit!')
     } catch (error) {
-      console.error('Gagal menambahkan ke favorit:', error);
-      alert('Gagal menambahkan ke favorit');
+      console.error('Gagal menambahkan ke favorit:', error)
+      alert('Gagal menambahkan ke favorit')
     }
   }
 
-  const handleAddToCart = async () => {
+  const handleAddToCart = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation()
+
     try {
       const res = await fetch('https://spesialsayurdb-production.up.railway.app/api/carts', {
         method: 'POST',
@@ -61,7 +67,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             produk: product.id,
           },
         }),
-      });
+      })
 
       if (!res.ok) {
         const err = await res.text()
@@ -70,23 +76,28 @@ export default function ProductCard({ product }: ProductCardProps) {
         return
       }
 
-    // Sukses: pindah ke detail
-    router.push(`/produk/${product.id}`)
-  } catch (error) {
-    console.error('Gagal koneksi ke server:', error)
-    alert('Tidak bisa menghubungi server.')
+      // Sukses: pindah ke detail
+      router.push(`/produk/${product.id}`)
+    } catch (error) {
+      console.error('Gagal koneksi ke server:', error)
+      alert('Tidak bisa menghubungi server.')
+    }
   }
-}
 
   return (
-    <div
-      className="bg-white rounded-xl shadow p-3 cursor-pointer"
-      onClick={handleCardClick}
-    >
+    <div className="relative bg-white rounded-xl shadow p-3 cursor-pointer" onClick={handleCardClick}>
+      {/* Icon Favorit */}
+      <button
+        onClick={handleAddToFavorite}
+        className="absolute top-2 right-2 bg-white rounded-full p-1 shadow"
+      >
+        <Heart className="text-red-500 w-5 h-5" />
+      </button>
+
       <img
         src={imageUrl}
         alt={product.nama_produk}
-        className="w-full h-32 object-cover"
+        className="w-full h-32 object-cover rounded"
       />
       <div className="p-2">
         <h2 className="text-sm font-medium">{product.nama_produk}</h2>
@@ -95,10 +106,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         </p>
       </div>
       <button
-        onClick={(e) => {
-          e.stopPropagation()
-          handleAddToCart()
-        }}
+        onClick={handleAddToCart}
         className="mt-2 w-full bg-green-500 text-white py-1 text-sm rounded"
       >
         Tambah ke Keranjang
