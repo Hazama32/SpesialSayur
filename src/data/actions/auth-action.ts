@@ -55,10 +55,7 @@ export async function updateUserProfileAfterRegister({
     }
   );
 
-  if (!res.ok) {
-    console.error('[UPDATE USER ERROR]', await res.json());
-    throw new Error('Gagal update profil user.');
-  }
+  
 
   return await res.json();
 }
@@ -109,7 +106,7 @@ export async function registerUserAction(prevState: any, formData: FormData) {
     alamat_pengiriman: formData.get('alamat_pengiriman') as string,
   });
 
-
+  
   const cookieStore = await cookies();
   cookieStore.set("jwt", responseData.jwt, config);
   
