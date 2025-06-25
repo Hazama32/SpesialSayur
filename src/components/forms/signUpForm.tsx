@@ -71,9 +71,16 @@ export function SignupForm() {
               <Label>Kategori User</Label>
               <div className="flex gap-4">
                 <label className="flex items-center gap-2">
-                  <input type="radio" name="kategori_user" value="Pribadi" required />
+                <input
+                  type="radio"
+                  name="kategori_user"
+                  value="Pribadi"
+                  defaultChecked
+                  required
+                  />
                   Pribadi
                 </label>
+
                 <label className="flex items-center gap-2">
                   <input type="radio" name="kategori_user" value="Usaha" />
                   Usaha
