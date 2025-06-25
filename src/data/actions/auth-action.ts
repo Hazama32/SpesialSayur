@@ -28,14 +28,49 @@ const schemaRegister = z.object({
   }),
 });
 
+export async function updateUserProfileAfterRegister({
+  userId,
+  jwt,
+  kategori_user,
+  alamat_pengiriman,
+}: {
+  userId: number;
+  jwt: string;
+  kategori_user: string;
+  alamat_pengiriman: string;
+}) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL || 'https://spesialsayurdb-production.up.railway.app/api'}/users/${userId}`,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
+      },
+      body: JSON.stringify({
+        kategori_user,
+        alamat_pengiriman,
+        point: 0,
+      }),
+    }
+  );
+
+  if (!res.ok) {
+    console.error('[UPDATE USER ERROR]', await res.json());
+    throw new Error('Gagal update profil user.');
+  }
+
+  return await res.json();
+}
+
 export async function registerUserAction(prevState: any, formData: FormData) {
   const validatedFields = schemaRegister.safeParse({
     username: formData.get("username"),
     password: formData.get("password"),
     email: formData.get("email"),
+    kategori_user: formData.get("kategori_user"),
     alamat_pengiriman: formData.get("alamat_pengiriman"),
     point: 0,
-    peringkat: "perunggu"
   });
 
   if (!validatedFields.success) {
@@ -67,11 +102,18 @@ export async function registerUserAction(prevState: any, formData: FormData) {
     };
   }
 
-  console.log(registerUserAction)
-  // const cookieStore = await cookies();
-  // cookieStore.set("jwt", responseData.jwt, config);
+  const updateData = await updateUserProfileAfterRegister({
+    userId: responseData.user.id,
+    jwt: responseData.jwt,
+    kategori_user: formData.get('kategori_user') as string,
+    alamat_pengiriman: formData.get('alamat_pengiriman') as string,
+  });
+
+
+  const cookieStore = await cookies();
+  cookieStore.set("jwt", responseData.jwt, config);
   
-  // redirect("/dashboard");
+  redirect("/dashboard");
 }
 
 const schemaLogin = z.object({
@@ -126,8 +168,6 @@ export async function loginUserAction(prevState: any, formData: FormData) {
       message: "Failed to Login.",
     };
   }
-
-  console.log(responseData, "responseData");
 
   const cookieStore = await cookies();
   cookieStore.set("jwt", responseData.jwt, config);
