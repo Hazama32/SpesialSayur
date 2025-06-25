@@ -83,7 +83,7 @@ export default function HomePage() {
           {/* Overlay Sapaan dan Slogan */}
           <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center items-center text-center px-4">
             <h1 className="text-2xl md:text-4xl font-bold text-white mb-2">
-              Selamat Datang di <span className="text-yellow-300">Spesial Sayur!</span>
+              Selamat Datang di <span className="text-yellow-300">Spesial Sayur</span>
             </h1>
             <p className="text-white text-lg md:text-xl italic mb-4">
               "Belanja sayur segar mudah, cepat, dan hemat setiap hari."
