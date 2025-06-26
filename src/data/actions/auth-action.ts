@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 
 import {
   registerUserService,
+  updateUserAfterRegister,
   loginUserService,
 } from "@/data/services/auth-service";
 
@@ -28,93 +29,50 @@ const schemaRegister = z.object({
   }),
 });
 
-export async function updateUserProfileAfterRegister({
-  userId,
-  jwt,
-  kategori_user,
-  alamat_pengiriman,
-}: {
-  userId: number;
-  jwt: string;
-  kategori_user: string;
-  alamat_pengiriman: string;
-}) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL || 'https://spesialsayurdb-production.up.railway.app/api'}/users/${userId}`,
-    {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${jwt}`,
-      },
-      body: JSON.stringify({
-        kategori_user,
-        alamat_pengiriman,
-        point: 0,
-      }),
-    }
-  );
-
-  console.log(jwt)
-  if (!res.ok) {
-    console.error('[UPDATE USER ERROR]', await res.json());
-    throw new Error('Gagal update profil user.');
-  }
-
-  return await res.json();
-}
 
 export async function registerUserAction(prevState: any, formData: FormData) {
-  const validatedFields = schemaRegister.safeParse({
+  const validated = schemaRegister.safeParse({
     username: formData.get("username"),
     password: formData.get("password"),
     email: formData.get("email"),
-    kategori_user: formData.get("kategori_user"),
-    alamat_pengiriman: formData.get("alamat_pengiriman"),
-    point: 0,
   });
 
-  if (!validatedFields.success) {
+  if (!validated.success) {
     return {
       ...prevState,
-      zodErrors: validatedFields.error.flatten().fieldErrors,
+      zodErrors: validated.error.flatten().fieldErrors,
       strapiErrors: null,
       message: "Missing Fields. Failed to Register.",
     };
   }
 
-  const responseData = await registerUserService(validatedFields.data);
+  const registerResponse = await registerUserService(validated.data);
 
-  if (!responseData) {
+  if (!registerResponse || registerResponse.error) {
     return {
       ...prevState,
-      strapiErrors: null,
+      strapiErrors: registerResponse?.error?.message || "Gagal membuat akun.",
       zodErrors: null,
-      message: "Ops! Something went wrong. Please try again.",
+      message: "Gagal register.",
     };
   }
 
-  if (responseData.error) {
-    return {
-      ...prevState,
-      strapiErrors: responseData.error,
-      zodErrors: null,
-      message: "Failed to Register.",
-    };
-  }
-
-  const updateData = await updateUserProfileAfterRegister({
-    userId: responseData.user.id,
-    jwt: responseData.jwt,
-    kategori_user: formData.get('kategori_user') as string,
-    alamat_pengiriman: formData.get('alamat_pengiriman') as string,
+  await updateUserAfterRegister({
+    userId: registerResponse.user.id,
+    jwt: registerResponse.jwt,
+    kategori_user: formData.get("kategori_user") as string,
+    alamat_pengiriman: formData.get("alamat_pengiriman") as string,
+    point: 0,
   });
 
+  console.log(registerResponse)
+
   const cookieStore = await cookies();
-  cookieStore.set("jwt", responseData.jwt, config);
-  
+  cookieStore.set("jwt", registerResponse.jwt, config);
+
   redirect("/dashboard");
 }
+
 
 const schemaLogin = z.object({
   identifier: z

@@ -6,6 +6,14 @@ interface RegisterUserProps {
   email: string;
 }
 
+interface UpdateUserProps {
+  userId: number;
+  jwt: string;
+  kategori_user: string;
+  alamat_pengiriman: string;
+  point: number;
+}
+
 interface LoginUserProps {
   identifier: string;
   password: string;
@@ -13,39 +21,64 @@ interface LoginUserProps {
 
 const baseUrl = getStrapiURL();
 
-export async function registerUserService(userData: RegisterUserProps) {
+export async function registerUserService(data: RegisterUserProps) {
   const url = new URL("/api/auth/local/register", baseUrl);
 
   try {
-    const response = await fetch(url, {
+    const res = await fetch(url.toString(), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ ...userData }),
+      body: JSON.stringify(data),
     });
 
-    return response.json();
-  } catch (error) {
-    console.error("Registration Service Error:", error);
+    return await res.json();
+  } catch (err) {
+    console.error("Register error:", err);
+    return null;
   }
 }
 
-export async function loginUserService(userData: LoginUserProps) {
+export async function updateUserAfterRegister(data: UpdateUserProps) {
+  const url = new URL(`/api/users/${data.userId}`, baseUrl);
+
+  try {
+    const res = await fetch(url.toString(), {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${data.jwt}`,
+      },
+      body: JSON.stringify({
+        kategori_user: data.kategori_user,
+        alamat_pengiriman: data.alamat_pengiriman,
+        point: data.point,
+      }),
+    });
+
+    return await res.json();
+  } catch (err) {
+    console.error("Update user error:", err);
+    return null;
+  }
+}
+
+export async function loginUserService(data: LoginUserProps) {
   const url = new URL("/api/auth/local", baseUrl);
 
   try {
-    const response = await fetch(url, {
+    const res = await fetch(url.toString(), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ ...userData }),
+      body: JSON.stringify(data),
     });
 
-    return response.json();
-  } catch (error) {
-    console.error("Login Service Error:", error);
-    throw error;
+    return await res.json();
+  } catch (err) {
+    console.error("Login error:", err);
+    return null;
   }
 }

@@ -127,9 +127,6 @@ export function SignupForm() {
               />
             )}
 
-
-
-
             {/* Alamat */}
             <div className="space-y-2">
               <Label htmlFor="alamat_pengiriman">Alamat Pengiriman</Label>
@@ -142,7 +139,6 @@ export function SignupForm() {
                 readOnly={alamatOption === 'maps'}
                 required
               />
-              <ZodErrors error={formState?.zodErrors?.alamat_pengiriman} />
             </div>
 
           </CardContent>
