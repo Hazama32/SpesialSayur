@@ -82,7 +82,7 @@ export default function HomePage() {
               {/* Logo dan Menu */}
               <div className="flex justify-between items-center p-4">
                 <div className="flex items-center gap-2">
-                  <img src="/Logo 2.png" alt="Logo" className="w-12 h-12" />
+                  <img src="/logos.png" alt="Logo" className="w-24 h-24" />
                   <h1 className="text-xl font-bold text-white">Spesial Sayur</h1>
                 </div>
                 <div className="flex gap-2 text-sm text-white">
@@ -171,7 +171,17 @@ export default function HomePage() {
          Kami menyediakan produk berkualitas yang selalu tersedia setiap hari, sehingga Anda bisa berfokus mengembangkan usaha tanpa perlu khawatir kehabisan stok.
          Dengan sistem pengelolaan pesanan yang efisien dan layanan pelanggan yang cepat tanggap maka proses belanja menjadi lebih praktis dan nyaman.
         </p>
-        <p className="mt-4 text-lg text-green-700 font-semibold">Hubungi kami sekarang di WhatsApp: 08xxxxxxxxx</p>
+        <p className="mt-4 text-lg text-green-700 font-semibold">
+    Hubungi kami sekarang di&nbsp;
+    <a 
+      href="https://wa.me/6288291244209" 
+      target="_blank" 
+      rel="noopener noreferrer" 
+      className="text-green-800 underline"
+    >
+      WhatsApp: 0882-9124-4209
+    </a>
+  </p>
       </section>
 
       {/* PRODUK */}
