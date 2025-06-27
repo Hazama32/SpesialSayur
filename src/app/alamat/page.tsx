@@ -1,88 +1,93 @@
 'use client'
-
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import { useRouter } from 'next/navigation'
+import HeaderSection from '@/components/HeaderSection'
 
-type Alamat = {
-  id: number
-  attributes: {
-    nama_penerima: string
-    nomor_hp: string
-    alamat_lengkap: string
-    catatan?: string
-  }
-}
-
-export default function AlamatPage() {
-  const [alamatList, setAlamatList] = useState<Alamat[]>([])
-  const [loading, setLoading] = useState(true)
+export default function AddressPage() {
   const router = useRouter()
+  const [user, setUser] = useState<{ id: number, jwt: string } | null>(null)
+  const [alamat, setAlamat] = useState('')
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const fetchAlamat = async () => {
-      try {
-        const token = localStorage.getItem('token')
-        const user = JSON.parse(localStorage.getItem('user') || '{}')
-        const userId = user?.id
-
-        if (!token || !userId) {
-          alert('Kamu belum login.')
-          router.push('/login')
-          return
-        }
-
-        const res = await axios.get(
-          `https://spesialsayurdb-production.up.railway.app/api/alamats?filters[user][id][$eq]=${userId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-
-        setAlamatList(res.data.data)
-      } catch (err) {
-        console.error('Gagal mengambil data alamat:', err)
-        alert('Gagal mengambil data alamat.')
-      } finally {
-        setLoading(false)
-      }
+    const userData = localStorage.getItem('user')
+    if (!userData) {
+      alert('Kamu belum login.')
+      router.push('/login')
+      return
     }
 
-    fetchAlamat()
+    const parsedUser = JSON.parse(userData)
+    setUser(parsedUser)
+
+    // Ambil data alamat user dari Strapi
+    fetch(`https://spesialsayurdb-production.up.railway.app/api/users/${parsedUser.id}`, {
+      headers: {
+        Authorization: `Bearer ${parsedUser.jwt}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setAlamat(data.alamat_pengiriman || '')
+        setLoading(false)
+      })
+      .catch((err) => {
+        console.error('Gagal fetch alamat:', err)
+        setLoading(false)
+      })
   }, [router])
 
-  if (loading) {
-    return <p className="p-4">Memuat alamat...</p>
+  const handleSave = async () => {
+    if (!user) return
+
+    try {
+      const res = await fetch(`https://spesialsayurdb-production.up.railway.app/api/users/${user.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.jwt}`,
+        },
+        body: JSON.stringify({
+          alamat_pengiriman: alamat,
+        }),
+      })
+
+      if (res.ok) {
+        alert('Alamat berhasil diperbarui!')
+      } else {
+        alert('Gagal memperbarui alamat.')
+      }
+    } catch (err) {
+      console.error('Error saat update:', err)
+      alert('Gagal koneksi ke server.')
+    }
   }
 
   return (
-    <div className="p-4">
-      <h1 className="text-lg font-bold mb-4">📍 Alamat Saya</h1>
+    <div className="min-h-screen bg-gray-300">
+      <HeaderSection title="Alamat Pengiriman" />
 
-      {alamatList.length === 0 ? (
-        <div className="text-center text-gray-500 mt-10">Belum ada alamat tersimpan.</div>
-      ) : (
-        <ul className="space-y-4">
-          {alamatList.map((item) => (
-            <li key={item.id} className="bg-white rounded-lg shadow p-4">
-              <p className="font-semibold text-lg">{item.attributes.nama_penerima}</p>
-              <p className="text-sm text-gray-600">{item.attributes.nomor_hp}</p>
-              <p className="text-sm">{item.attributes.alamat_lengkap}</p>
-              {item.attributes.catatan && (
-                <p className="text-sm text-gray-500 italic">
-                  Catatan: {item.attributes.catatan}
-                </p>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
+      <div className="p-4">
+        {loading ? (
+          <p className="text-center">Memuat alamat...</p>
+        ) : (
+          <>
+            <textarea
+              value={alamat}
+              onChange={(e) => setAlamat(e.target.value)}
+              className="w-full h-40 p-2 rounded"
+              placeholder="Masukkan alamat pengiriman kamu"
+            ></textarea>
 
-      <button className="bg-green-600 mt-6 text-white px-4 py-2 rounded-lg shadow w-full">
-        Tambah Alamat Baru
-      </button>
+            <button
+              onClick={handleSave}
+              className="mt-4 w-full bg-green-600 text-white py-2 rounded"
+            >
+              Simpan Alamat
+            </button>
+          </>
+        )}
+      </div>
     </div>
   )
 }

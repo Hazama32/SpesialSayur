@@ -55,7 +55,7 @@ export default function HomePage() {
         <div className="flex justify-between items-center mb-2">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <img src="/Logo 2.png" alt="Logo" className="w-16 h-16" />
+            <img src="/Logos.png" alt="Logo" className="w-16 h-16" />
             <h1 className="text-xl font-bold">Spesial Sayur</h1>
           </div>
 

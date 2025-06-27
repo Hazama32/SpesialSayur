@@ -16,7 +16,7 @@ export default function Navbar() {
   ]
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white pb-3 border-t shadow-xl flex justify-around py-4 z-60">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white pb-3 border-t shadow-xl flex justify-around py-4 z-[999]">
       {navItems.map((item) => (
         <Link
           key={item.href}
