@@ -172,14 +172,14 @@ export default function HomePage() {
          Dengan sistem pengelolaan pesanan yang efisien dan layanan pelanggan yang cepat tanggap maka proses belanja menjadi lebih praktis dan nyaman.
         </p>
         <p className="mt-4 text-lg text-green-700 font-semibold">
-    Hubungi kami sekarang di&nbsp;
+    Hubungi kami sekarang di WhatsApp:&nbsp;
     <a 
       href="https://wa.me/6288291244209" 
       target="_blank" 
       rel="noopener noreferrer" 
       className="text-green-800 underline"
     >
-      WhatsApp: 0882-9124-4209
+      0882-9124-4209
     </a>
   </p>
       </section>
