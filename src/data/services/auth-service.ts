@@ -11,6 +11,7 @@ interface UpdateUserProps {
   jwt: string;
   kategori_user: string;
   alamat_pengiriman: string;
+  nomor_telepon: number;
   point: number;
 }
 
@@ -30,7 +31,7 @@ export async function registerUserService(data: RegisterUserProps) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(data), // hanya username, email, password
     });
 
     return await res.json();
@@ -53,6 +54,7 @@ export async function updateUserAfterRegister(data: UpdateUserProps) {
       body: JSON.stringify({
         kategori_user: data.kategori_user,
         alamat_pengiriman: data.alamat_pengiriman,
+        nomor_telepon: data.nomor_telepon,
         point: data.point,
       }),
     });

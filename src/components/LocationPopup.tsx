@@ -1,7 +1,6 @@
-// components/LocationPopup.tsx
-'use client'
+"use client"
 
-import { useState } from 'react'
+import { useEffect, useState } from "react"
 
 type LocationPopupProps = {
   onConfirm: (alamat: string) => void
@@ -10,8 +9,13 @@ type LocationPopupProps = {
 
 export default function LocationPopup({ onConfirm, onClose }: LocationPopupProps) {
   const [loading, setLoading] = useState(false)
-  const [alamat, setAlamat] = useState('')
-  const [error, setError] = useState('')
+  const [alamat, setAlamat] = useState("")
+  const [error, setError] = useState("")
+
+  useEffect(() => {
+    // Otomatis ambil lokasi saat popup terbuka
+    handleAmbilLokasi()
+  }, [])
 
   const fetchAddress = async (latitude: number, longitude: number) => {
     try {
@@ -19,38 +23,45 @@ export default function LocationPopup({ onConfirm, onClose }: LocationPopupProps
       const data = await response.json()
 
       if (!data.display_name) {
-        alert('Gagal mendapatkan alamat.')
+        setError("Gagal mendapatkan alamat.")
         return
       }
 
       setAlamat(data.display_name)
-    } catch (error) {
-      console.error('Gagal fetch dari proxy:', error)
-      setError('Gagal mengambil alamat.')
+    } catch (err) {
+      console.error("Fetch gagal:", err)
+      setError("Gagal mengambil alamat.")
     }
   }
 
   const handleAmbilLokasi = () => {
     setLoading(true)
-    setError('')
+    setError("")
 
     if (!navigator.geolocation) {
-      setError('Geolocation tidak didukung oleh browser Anda.')
+      setError("Geolocation tidak didukung browser.")
       setLoading(false)
       return
     }
 
     navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const { latitude, longitude } = position.coords
-        await fetchAddress(latitude, longitude) 
+      async (pos) => {
+        const { latitude, longitude } = pos.coords
+        await fetchAddress(latitude, longitude)
         setLoading(false)
       },
       (err) => {
-        setError('Gagal mendapatkan lokasi. Pastikan GPS aktif.')
+        setError("Gagal mengambil lokasi. Aktifkan GPS.")
         setLoading(false)
       }
     )
+  }
+
+  const handleConfirm = () => {
+    if (alamat) {
+      onConfirm(alamat)
+      onClose() // ✅ langsung tutup popup setelah dipakai
+    }
   }
 
   return (
@@ -66,7 +77,7 @@ export default function LocationPopup({ onConfirm, onClose }: LocationPopupProps
             <p className="text-green-600 text-sm font-medium">{alamat}</p>
             <button
               className="bg-green-500 w-full text-white py-2 rounded"
-              onClick={() => onConfirm(alamat)}
+              onClick={handleConfirm}
             >
               Gunakan Alamat Ini
             </button>
@@ -83,7 +94,7 @@ export default function LocationPopup({ onConfirm, onClose }: LocationPopupProps
             onClick={handleAmbilLokasi}
             disabled={loading}
           >
-            {loading ? 'Mengambil lokasi...' : 'Ambil Lokasi Sekarang'}
+            {loading ? "Mengambil lokasi..." : "Ambil Lokasi Sekarang"}
           </button>
         )}
 

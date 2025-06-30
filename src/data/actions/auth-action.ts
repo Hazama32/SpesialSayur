@@ -10,13 +10,14 @@ import {
 } from "@/data/services/auth-service";
 
 const config = {
-  maxAge: 60 * 60 * 24 * 7, // 1 week
+  maxAge: 60 * 60 * 24 * 7,
   path: "/",
   domain: process.env.HOST ?? "localhost",
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
 };
 
+// ✅ schema lengkap: nomor_telepon tetap divalidasi sebagai string angka
 const schemaRegister = z.object({
   username: z.string().min(3).max(20, {
     message: "Username must be between 3 and 20 characters",
@@ -27,17 +28,30 @@ const schemaRegister = z.object({
   email: z.string().email({
     message: "Please enter a valid email address",
   }),
+  nomor_telepon: z
+    .string()
+    .min(8, { message: "Nomor telepon wajib diisi dan minimal 8 digit" })
+    .regex(/^\d+$/, { message: "Nomor telepon hanya boleh angka" }),
 });
 
-
 export async function registerUserAction(prevState: any, formData: FormData) {
+  // debug helper
+  console.log("FormData:", {
+    username: formData.get("username"),
+    password: formData.get("password"),
+    email: formData.get("email"),
+    nomor_telepon: formData.get("nomor_telepon"),
+  });
+
   const validated = schemaRegister.safeParse({
     username: formData.get("username"),
     password: formData.get("password"),
     email: formData.get("email"),
+    nomor_telepon: formData.get("nomor_telepon"),
   });
 
   if (!validated.success) {
+    console.log("Zod validation failed:", validated.error.flatten().fieldErrors);
     return {
       ...prevState,
       zodErrors: validated.error.flatten().fieldErrors,
@@ -46,7 +60,14 @@ export async function registerUserAction(prevState: any, formData: FormData) {
     };
   }
 
-  const registerResponse = await registerUserService(validated.data);
+  // ✅ Only send base fields
+  const registerResponse = await registerUserService({
+    username: validated.data.username,
+    password: validated.data.password,
+    email: validated.data.email,
+  });
+
+  console.log("Register Response:", registerResponse);
 
   if (!registerResponse || registerResponse.error) {
     return {
@@ -57,15 +78,15 @@ export async function registerUserAction(prevState: any, formData: FormData) {
     };
   }
 
+  // ✅ Use updateUserAfterRegister to push custom fields
   await updateUserAfterRegister({
     userId: registerResponse.user.id,
     jwt: registerResponse.jwt,
     kategori_user: formData.get("kategori_user") as string,
     alamat_pengiriman: formData.get("alamat_pengiriman") as string,
+    nomor_telepon: parseInt(validated.data.nomor_telepon, 10),
     point: 0,
   });
-
-  console.log(registerResponse)
 
   const cookieStore = await cookies();
   cookieStore.set("jwt", registerResponse.jwt, config);
@@ -73,24 +94,13 @@ export async function registerUserAction(prevState: any, formData: FormData) {
   redirect("/dashboard");
 }
 
-
 const schemaLogin = z.object({
-  identifier: z
-    .string()
-    .min(3, {
-      message: "Identifier must have at least 3 or more characters",
-    })
-    .max(20, {
-      message: "Please enter a valid username or email address",
-    }),
-  password: z
-    .string()
-    .min(6, {
-      message: "Password must have at least 6 or more characters",
-    })
-    .max(100, {
-      message: "Password must be between 6 and 100 characters",
-    }),
+  identifier: z.string().min(3).max(20, {
+    message: "Identifier must have at least 3 or more characters",
+  }),
+  password: z.string().min(6).max(100, {
+    message: "Password must be between 6 and 100 characters",
+  }),
 });
 
 export async function loginUserAction(prevState: any, formData: FormData) {
@@ -112,7 +122,7 @@ export async function loginUserAction(prevState: any, formData: FormData) {
   if (!responseData) {
     return {
       ...prevState,
-      strapiErrors: responseData.error,
+      strapiErrors: responseData?.error,
       zodErrors: null,
       message: "Ops! Something went wrong. Please try again.",
     };

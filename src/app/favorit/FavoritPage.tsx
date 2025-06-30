@@ -1,87 +1,75 @@
 'use client'
-import { useEffect, useState } from 'react'
-import HeaderSection from '@/components/HeaderSection'
-type FavoriteItem = {
+
+import { useEffect, useState } from "react"
+import ProductCard from "@/components/ProductCard"
+import { getLocalFavorites } from "@/lib/favStorage"
+import HeaderSection from "@/components/HeaderSection"
+
+type Produk = {
   id: number
-  attributes: {
-    produk: {
-      data: {
-        id: number
-        attributes: {
-          nama: string
-          harga: number
-          gambar?: {
-            data?: {
-              attributes?: {
-                url: string
-              }
-            }
-          }
-        }
-      }
-    }
-  }
+  nama_produk: string
+  harga_kiloan: string
+  slug: string
+  gambar: { url: string }[]
 }
 
 export default function FavoritePage() {
- const [favorites, setFavorites] = useState<FavoriteItem[] | null>(null)
+  const [filteredProducts, setFilteredProducts] = useState<Produk[]>([])
 
   useEffect(() => {
-    fetch('https://spesialsayurdb-production.up.railway.app/api/favorites?populate=produk.gambar')
-      .then((res) => res.json())
-      .then((data) => setFavorites(data.data))
+    const favorites = getLocalFavorites()
+    const ids = favorites.map((fav) => fav.produkId)
+
+    if (ids.length === 0) {
+      setFilteredProducts([])
+      return
+    }
+
+    const fetchProduk = async () => {
+      const query = ids.map((id) => `filters[id][$in]=${id}`).join("&")
+      const res = await fetch(
+        `https://spesialsayurdb-production.up.railway.app/api/produks?populate=*`
+      )
+      const data = await res.json()
+
+      const produkList: Produk[] = []
+
+      data.data.forEach((p: any) => {
+        const produkId = p.id ?? p.attributes?.id
+
+        if (!produkId || !ids.includes(produkId)) {
+          console.warn("Lewatkan produk yang tidak cocok ID favorit:", produkId)
+          return
+        }
+
+        produkList.push({
+          id: produkId,
+          nama_produk: p.nama_produk ?? p.attributes?.nama_produk ?? '',
+          harga_kiloan: p.harga_kiloan ?? p.attributes?.harga_kiloan ?? '',
+          slug: p.slug ?? p.attributes?.slug ?? '',
+          gambar:
+            p.gambar?.map((img: any) => ({ url: img.url })) ??
+            p.attributes?.gambar?.data?.map((img: any) => ({
+              url: img.attributes?.url,
+            })) ??
+            [],
+        })
+      })
+
+      setFilteredProducts(produkList)
+    }
+
+    fetchProduk()
   }, [])
 
-  const handleRemove = async (id: number) => {
-    const res = await fetch(`https://spesialsayurdb-production.up.railway.app/api/favorites/${id}`, {
-      method: 'DELETE',
-    })
-
-    if (res.ok) {
-      setFavorites(favorites.filter((item) => item.id !== id))
-    } else {
-      alert('Gagal menghapus dari favorit.')
-    }
-  }
-
   return (
-  <div className="min-h-screen bg-gray-300">
-    <HeaderSection title="Favorit" toHome={false} />
-
-    {favorites === null ? (
-      <p className="text-black">Memuat data...</p>
-    ) : favorites.length === 0 ? (
-      <div className="flex flex-col items-center justify-center mt-20">
-        <span className="text-5xl text-pink-300">♡</span>
-        <p className="text-gray-500 mt-4">Belum ada produk favorit.</p>
+    <div>
+      <HeaderSection title="favorit"/>
+      <div className="p-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-black">
+        {filteredProducts.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
       </div>
-    ) : (
-      <ul className="space-y-4">
-        {favorites.map((fav) => {
-          const produk = fav.attributes.produk?.data
-          const attr = produk?.attributes
-          const img = attr?.gambar?.data?.attributes?.url
-            ? `https://spesialsayurdb-production.up.railway.app${attr.gambar.data.attributes.url}`
-            : '/noimage.png'
-
-          return (
-            <li key={fav.id} className="flex items-center gap-4 border-b pb-2">
-              <img src={img} alt={attr?.nama} className="w-16 h-16 object-cover rounded" />
-              <div className="flex-1">
-                <p className="font-semibold">{attr?.nama}</p>
-                <p className="text-orange-600 text-sm">Rp {attr?.harga?.toLocaleString()}</p>
-              </div>
-              <button
-                onClick={() => handleRemove(fav.id)}
-                className="text-sm text-red-500"
-              >
-                Hapus
-              </button>
-            </li>
-          )
-        })}
-      </ul>
-    )}
-  </div>
-)
+    </div>
+  )
 }

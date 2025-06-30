@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useFormState } from "react-dom";
 import { useState } from "react";
+import { MapPin } from "lucide-react"
 import LocationPopup from "@/components/LocationPopup";
 
 import {
@@ -29,7 +30,6 @@ const INITIAL_STATE = {
 export function SignupForm() {
   const [formState, formAction] = useFormState(registerUserAction, INITIAL_STATE);
   const [showLocationPopup, setShowLocationPopup] = useState(false);
-  const [alamatOption, setAlamatOption] = useState('manual');
   const [alamatFromMaps, setAlamatFromMaps] = useState('');
 
 
@@ -62,8 +62,15 @@ export function SignupForm() {
             {/* Password */}
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" name="password" type="password" placeholder="password" />
+              <Input id="password" name="password" type="password" placeholder="Masukan Password" />
               <ZodErrors error={formState?.zodErrors?.password} />
+            </div>
+
+            {/* nomor telepon */}
+            <div className="space-y-2">
+              <Label htmlFor="nomor_telepon">Nomor Telepon</Label>
+              <Input id="nomor_telepon" name="nomor_telepon" type="number" placeholder="Nomor Telepon Aktif" />
+              <ZodErrors error={formState?.zodErrors?.nomor_telepon} />
             </div>
 
             {/* Kategori User */}
@@ -88,35 +95,30 @@ export function SignupForm() {
               </div>
             </div>
 
-            {/* Pilihan Alamat */}
+            {/* Alamat */}
             <div className="space-y-2">
-              <Label>Metode Pengisian Alamat</Label>
-              <div className="flex gap-4">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="alamat_option"
-                    value="manual"
-                    checked={alamatOption === 'manual'}
-                    onChange={() => setAlamatOption('manual')}
-                  />
-                  Isi Manual
-                </label>
-                <label className="flex items-center gap-2">
-                  <input
-                      type="radio"
-                      name="alamat_option"
-                      value="maps"
-                      checked={alamatOption === 'maps'}
-                      onChange={() => {
-                        setAlamatOption('maps');
-                        setShowLocationPopup(true);
-                      }}
-                    />
-                    Gunakan Lokasi Maps
-                </label>
+              <Label htmlFor="alamat_pengiriman">Alamat Pengiriman</Label>
+              <div className="flex gap-2 items-center">
+                <Input
+                  id="alamat_pengiriman"
+                  name="alamat_pengiriman"
+                  type="text"
+                  placeholder="Alamat Pengiriman"
+                  value={alamatFromMaps}
+                  onChange={(e) => setAlamatFromMaps(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowLocationPopup(true)}
+                  className="p-2 rounded bg-green-100 hover:bg-green-200 border border-green-300"
+                  aria-label="Ambil lokasi dari maps"
+                >
+                  <MapPin className="h-5 w-5 text-green-700" />
+                </button>
               </div>
             </div>
+
             {showLocationPopup && (
               <LocationPopup
                 onConfirm={(alamat) => {
@@ -126,20 +128,6 @@ export function SignupForm() {
                 onClose={() => setShowLocationPopup(false)}
               />
             )}
-
-            {/* Alamat */}
-            <div className="space-y-2">
-              <Label htmlFor="alamat_pengiriman">Alamat Pengiriman</Label>
-              <Input
-                id="alamat_pengiriman"
-                name="alamat_pengiriman"
-                type="text"
-                placeholder="Alamat Pengiriman"
-                value={alamatOption === 'maps' ? alamatFromMaps : undefined}
-                readOnly={alamatOption === 'maps'}
-                required
-              />
-            </div>
 
           </CardContent>
           <CardFooter className="flex flex-col">
