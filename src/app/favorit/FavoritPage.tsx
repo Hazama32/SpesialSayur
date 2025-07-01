@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import ProductCard from "@/components/ProductCard"
 import { getLocalFavorites } from "@/lib/favStorage"
-import HeaderSection from "@/components/HeaderSection"
+import Navbar from '@/components/Navbar'
 
 type Produk = {
   id: number
@@ -63,12 +63,23 @@ export default function FavoritePage() {
   }, [])
 
   return (
-    <div>
-      <HeaderSection title="favorit"/>
+    <div className="min-h-screen bg-gray-300 pb-16">
+      <Navbar />
       <div className="p-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-black">
-        {filteredProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
+         {filteredProducts.length === 0 ? (
+          <div className="col-span-full flex flex-col items-center justify-center min-h-[calc(100vh-150px)]"> {/* Centering for no favorites */}
+            <img
+              src="/icons/fav.png" // Placeholder for empty favorite icon
+              alt="Favorit Kosong"
+              className="w-24 h-24 sm:w-50 sm:h-50"
+            />
+            <p className="text-gray-500 text-center mt-4">Daftar favorit kamu masih kosong.</p>
+          </div>
+        ) : (
+          filteredProducts.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))
+        )}
       </div>
     </div>
   )

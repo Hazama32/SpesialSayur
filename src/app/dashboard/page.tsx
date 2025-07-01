@@ -38,8 +38,8 @@ export default function HomePage() {
   const [products, setProducts] = useState<ProductItem[]>([])
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('All')
-
   const [bannerList, setBannerList] = useState<string[]>([])
+  const [activePopupId, setActivePopupId] = useState<number | null>(null) // 👉 untuk popup per card
 
   useEffect(() => {
     fetch('https://spesialsayurdb-production.up.railway.app/api/produks?populate=*')
@@ -53,7 +53,6 @@ export default function HomePage() {
         console.error('Gagal fetch produk:', err)
       })
 
-    // ✅ Fetch multiple voucher banner aktif
     fetch('https://spesialsayurdb-production.up.railway.app/api/vouchers?populate=*')
       .then((res) => res.json())
       .then((data) => {
@@ -126,7 +125,7 @@ export default function HomePage() {
 
       <div className="h-4" />
 
-      {/* ✅ BANNER CAROUSEL */}
+      {/* BANNER CAROUSEL */}
       <div className="px-4">
         {bannerList.length > 0 ? (
           <Swiper
@@ -175,13 +174,18 @@ export default function HomePage() {
       {/* PRODUK */}
       <div className="p-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-black">
         {filteredProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard
+            key={product.id}
+            product={product}
+            activePopupId={activePopupId}
+            setActivePopupId={setActivePopupId}
+          />
         ))}
       </div>
-      
-      {/* footer */}
-      <div className='h-8 pt-8'>
-          <p>footer buat copyright</p>
+
+      {/* FOOTER */}
+      <div className="h-8 pt-8 text-center text-sm text-gray-600">
+        <p>&copy; 2025 Spesial Sayur. All rights reserved.</p>
       </div>
     </div>
   )

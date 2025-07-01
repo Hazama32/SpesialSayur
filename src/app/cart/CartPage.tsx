@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import HeaderSection from '@/components/HeaderSection'
+import Navbar from '@/components/Navbar'
 import {
   getLocalCart,
   removeFromLocalCart,
@@ -194,8 +194,7 @@ console.log("Isi localCart:", localCart)
 
   return (
     <div className="min-h-screen bg-gray-300">
-      <HeaderSection title="Pesanan" />
-
+      <Navbar />
       {/* Tombol Batalkan Semua */}
       {items.length > 0 && (
         <div className="flex justify-end px-4 mt-2">
@@ -209,13 +208,13 @@ console.log("Isi localCart:", localCart)
       )}
 
       {items.length === 0 ? (
-        <div className="flex flex-col items-center justify-center mt-20">
+         <div className="flex flex-col items-center justify-center min-h-[calc(100vh-150px)]"> {/* Sesuaikan 150px jika tinggi Navbar dan/atau header berubah */}
           <img
             src="/icons/cart 3.png"
             alt="Keranjang Kosong"
-            className="w-24 h-24 sm:w-32 sm:h-32"
+            className="w-24 h-24 sm:w-50 sm:h-50"
           />
-          <p className="text-gray-500 text-center">Keranjang kamu masih kosong.</p>
+          <p className="text-gray-500 text-center mt-4">Keranjang kamu masih kosong.</p>
         </div>
       ) : (
         <>
