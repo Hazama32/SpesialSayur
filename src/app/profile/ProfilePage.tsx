@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Heart, MapPin, HelpCircle, Settings, Package } from 'lucide-react'
 import Image from 'next/image'
-import HeaderSection from '@/components/HeaderSection'
+import Navbar from '@/components/Navbar'
 import MenuItem from '@/components/MenuItem'
 import PaymentMethod from '@/components/PaymentMethod'
 
@@ -59,7 +59,7 @@ export default function AccountPage() {
 
   return (
     <div className="min-h-screen bg-gray-300">
-      <HeaderSection title="Akun" />
+     <Navbar />
 
       {/* Profile */}
       <div className="bg-white px-4 py-5 flex items-center gap-4 shadow-sm text-black">

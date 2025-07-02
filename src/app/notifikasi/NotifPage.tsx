@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import HeaderSection from '@/components/HeaderSection'
+import Navbar from '@/components/Navbar'
 
 type Notification = {
   id: number
@@ -35,7 +35,7 @@ export default function NotificationPage() {
 
   return (
     <div className="min-h-screen bg-gray-300">
-      <HeaderSection title="Notifikasi" />
+      <Navbar />
 
       <div className="p-4">
         {loading ? (

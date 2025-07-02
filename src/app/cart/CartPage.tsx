@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation' // ✅ App Router version!
 import HeaderSection from '@/components/HeaderSection'
+
 import {
   clearLocalCart,
   getLocalCart,
