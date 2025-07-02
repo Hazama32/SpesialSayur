@@ -9,7 +9,6 @@ import {
   removeFromLocalFavorites,
 } from '@/lib/favStorage'
 import GramasiPopup from './GramasiPopup'
-import { useRouter } from 'next/navigation'
 
 type ProductCardProps = {
   product: {
@@ -22,16 +21,13 @@ type ProductCardProps = {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const router = useRouter()
   const [isFavorite, setIsFavorite] = useState(() =>
     getLocalFavorites().some((fav) => fav.produkId === product.id)
   )
-  const [jumlahPesanan, setJumlahPesanan] = useState(250)
+  const [jumlahPesanan, setJumlahPesanan] = useState(250) // default gram
   const [showDropdown, setShowDropdown] = useState(false)
 
-  const imageUrl =
-    'https://spesialsayurdb-production.up.railway.app' +
-    (product.gambar[0]?.url || '')
+  const hargaPerKg = Number(product.harga_kiloan)
 
   const toggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -48,13 +44,6 @@ export default function ProductCard({ product }: ProductCardProps) {
     setShowDropdown(!showDropdown)
   }
 
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    const harga = Number(product.harga_kiloan)
-    saveToLocalCart(product.id, jumlahPesanan, harga)
-    alert(`Ditambahkan ke keranjang: ${jumlahPesanan} gr`)
-  }
-
   const handleSelectGram = (gram: number) => {
     setJumlahPesanan(gram)
     setShowDropdown(false)
@@ -63,19 +52,23 @@ export default function ProductCard({ product }: ProductCardProps) {
   const handleInputKg = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = parseFloat(e.target.value)
     if (!isNaN(val) && val >= 0.25) {
-      setJumlahPesanan(Math.round(val * 1000))
+      setJumlahPesanan(Math.round(val * 1000)) // simpan ke gram
     }
   }
 
-  const handleCardClick = () => {
-    router.push(`/produk/${product.slug}`)
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    const subtotal = (hargaPerKg / 1000) * jumlahPesanan
+    saveToLocalCart(product.id, jumlahPesanan, hargaPerKg)
+    alert(
+      `Ditambahkan ke keranjang:\n${jumlahPesanan >= 1000 ? jumlahPesanan / 1000 + ' kg' : jumlahPesanan + ' gr'}\nSubtotal: Rp ${Math.ceil(subtotal).toLocaleString()}`
+    )
   }
 
+  const imageUrl = `https://spesialsayurdb-production.up.railway.app${product.gambar[0]?.url || ''}`
+
   return (
-    <div
-      className="relative bg-white rounded-xl shadow p-3 cursor-pointer h-64 w-full"
-      onClick={handleCardClick}
-    >
+    <div className="relative bg-white rounded-xl shadow p-3 cursor-pointer h-64 w-full">
       {/* Favorite */}
       <button
         onClick={toggleFavorite}
@@ -97,7 +90,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       <div className="p-2">
         <h2 className="text-sm font-medium">{product.nama_produk}</h2>
         <p className="text-green-600 font-semibold text-sm">
-          Rp {product.harga_kiloan} / kg
+          Rp {hargaPerKg} / kg
         </p>
       </div>
 
@@ -116,8 +109,9 @@ export default function ProductCard({ product }: ProductCardProps) {
           type="number"
           step="0.01"
           min="0.25"
-          placeholder="---"
+          placeholder="kg"
           onChange={handleInputKg}
+          value={jumlahPesanan >= 1000 ? (jumlahPesanan / 1000).toFixed(2) : ''}
           className="border p-1 rounded w-16 text-sm text-center"
         />
         <span className="text-sm">kg</span>

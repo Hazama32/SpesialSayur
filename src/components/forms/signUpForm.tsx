@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useFormState } from "react-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MapPin } from "lucide-react"
 import LocationPopup from "@/components/LocationPopup";
 
@@ -31,6 +31,13 @@ export function SignupForm() {
   const [formState, formAction] = useFormState(registerUserAction, INITIAL_STATE);
   const [showLocationPopup, setShowLocationPopup] = useState(false);
   const [alamatFromMaps, setAlamatFromMaps] = useState('');
+  useEffect(() => {
+    if (formState?.success) {
+      localStorage.setItem('username', formState.username);
+      localStorage.setItem('userId', String(formState.userId));
+      window.location.href = formState.redirectTo || '/dashboard';
+    }
+  }, [formState]);
 
 
   return (

@@ -94,6 +94,7 @@ export default function HomePage() {
   })
 
   const categories = ['All', 'Sayur', 'Buah']
+  const username = localStorage.getItem('username')
 
   return (
     <div className="min-h-screen bg-gray-300 pb-16">
@@ -111,7 +112,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        <p className="text-lg mx-2">Selamat Datang Bintang</p>
+        <p className="text-lg mx-2">Selamat Datang {username}</p>
 
         <div className="mt-3">
           <input

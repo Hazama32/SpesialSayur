@@ -12,13 +12,13 @@ export default function GramasiPopup({
   const options = [250, 500, 750, 1000]
 
   return (
-    <div className="w-full mt-2 bg-white rounded-br-xl rounded-bl-xl px-12 pb-4">
-      <div className="grid grid-cols-4 gap-2">
+    <div className="absolute top-full left-0 w-full bg-white border rounded shadow p-2 z-50">
+      <div className="flex flex-wrap gap-2">
         {options.map((g) => (
           <button
             key={g}
             onClick={() => onSelectGram(g)}
-            className={`border px-3 py-1 rounded text-sm w-full ${
+            className={`border px-3 py-1 rounded ${
               selectedGram === g
                 ? 'bg-green-500 text-white'
                 : 'bg-white text-green-700'

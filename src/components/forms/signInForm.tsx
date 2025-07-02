@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useFormState } from "react-dom";
+import { useEffect } from "react";
 import { loginUserAction } from "@/data/actions/auth-action";
 
 import {
@@ -27,6 +28,14 @@ const INITIAL_STATE = {
 
 export function SigninForm() {
   const [formState, formAction] = useFormState(loginUserAction, INITIAL_STATE);
+
+  useEffect(() => {
+  if (formState?.success) {
+    window.location.href = formState.redirectTo || '/dashboard';
+  }
+}, [formState]);
+
+  
   return (
     <div className="w-full max-w-md">
       <form action={formAction}>

@@ -30,7 +30,7 @@ const schemaRegister = z.object({
   }),
   nomor_telepon: z
     .string()
-    .min(8, { message: "Nomor telepon wajib diisi dan minimal 8 digit" })
+    .min(8, { message: "Nomor telepon wajib diisi dengan nomor aktif" })
     .regex(/^\d+$/, { message: "Nomor telepon hanya boleh angka" }),
 });
 
@@ -91,7 +91,12 @@ export async function registerUserAction(prevState: any, formData: FormData) {
   const cookieStore = await cookies();
   cookieStore.set("jwt", registerResponse.jwt, config);
 
-  redirect("/dashboard");
+  return {
+    success: true,
+    username: registerResponse.user.username,
+    userId: registerResponse.user.id,
+    redirectTo: "/dashboard"
+  };
 }
 
 const schemaLogin = z.object({
@@ -119,19 +124,10 @@ export async function loginUserAction(prevState: any, formData: FormData) {
 
   const responseData = await loginUserService(validatedFields.data);
 
-  if (!responseData) {
+  if (!responseData || responseData.error) {
     return {
       ...prevState,
       strapiErrors: responseData?.error,
-      zodErrors: null,
-      message: "Ops! Something went wrong. Please try again.",
-    };
-  }
-
-  if (responseData.error) {
-    return {
-      ...prevState,
-      strapiErrors: responseData.error,
       zodErrors: null,
       message: "Failed to Login.",
     };
@@ -140,8 +136,13 @@ export async function loginUserAction(prevState: any, formData: FormData) {
   const cookieStore = await cookies();
   cookieStore.set("jwt", responseData.jwt, config);
 
-  redirect("/dashboard");
+  return {
+    ...prevState,
+    success: true,
+    redirectTo: "/dashboard",
+  };
 }
+
 
 export async function logoutAction() {
   const cookieStore = await cookies();
