@@ -64,6 +64,9 @@ export default function FavoritePage() {
 
   return (
     <div className="min-h-screen bg-gray-300 pb-16">
+       <div className="bg-green-600 text-white p-4 pt-6 shadow">
+        <h1 className="text-lg font-semibold text-center">Favorit Saya</h1>
+      </div>
       <Navbar />
       <div className="p-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-black">
          {filteredProducts.length === 0 ? (

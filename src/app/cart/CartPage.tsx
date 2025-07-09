@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation' // ✅ App Router version!
-import HeaderSection from '@/components/HeaderSection'
+import Navbar from '@/components/Navbar'
 
 import {
   clearLocalCart,
@@ -126,8 +126,11 @@ export default function CartPage() {
   if (loading) return <p className="p-4">Memuat keranjang...</p>
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <HeaderSection title="Pesanan" />
+    <div className="min-h-screen bg-gray-300 pb-16">
+       <div className="bg-green-600 text-white p-4 pt-6 shadow">
+        <h1 className="text-lg font-semibold text-center">Pesanan Saya</h1>
+      </div>
+      <Navbar />
       <button
         onClick={() => {
           clearLocalCart()

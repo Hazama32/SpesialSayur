@@ -34,9 +34,11 @@ export default function NotificationPage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gray-300">
+    <div className="min-h-screen bg-gray-300 pb-16">
+       <div className="bg-green-600 text-white p-4 pt-6 shadow">
+        <h1 className="text-lg font-semibold text-center">Notifikasi Saya</h1>
+      </div>
       <Navbar />
-
       <div className="p-4">
         {loading ? (
           <p className="text-center text-gray-600">Memuat notifikasi...</p>

@@ -58,7 +58,10 @@ export default function AccountPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-300">
+    <div className="min-h-screen bg-gray-300 pb-16">
+       <div className="bg-green-600 text-white p-4 pt-6 shadow">
+        <h1 className="text-lg font-semibold text-center">Akun</h1>
+      </div>
      <Navbar />
 
       {/* Profile */}
@@ -82,7 +85,7 @@ export default function AccountPage() {
       {/* Menu Akun */}
       <div className="bg-white mt-3 shadow-sm text-gray-800">
         <MenuItem icon={<Package />} label="Pesanan" href="/pesanan" />
-        <MenuItem icon={<Heart />} label="Favorite Saya" href="/favorit" />
+        <MenuItem icon={<Heart />} label="Favorit Saya" href="/favorit" />
         <MenuItem icon={<MapPin />} label="Alamat" href="/alamat" />
         <MenuItem icon={<HelpCircle />} label="Bantuan & Laporan" href="/bantuan" />
         <MenuItem icon={<Settings />} label="Pengaturan Akun" href="/pengaturan" />
