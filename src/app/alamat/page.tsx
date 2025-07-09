@@ -21,7 +21,7 @@ export default function AddressPage() {
     setUser(parsedUser)
 
     // Ambil data alamat user dari Strapi
-    fetch(`https://spesialsayurdb-production.up.railway.app/api/users/${parsedUser.id}`, {
+    fetch(`https://spesialsayurdb-production-b3b4.up.railway.app/api/users/${parsedUser.id}`, {
       headers: {
         Authorization: `Bearer ${parsedUser.jwt}`,
       },
@@ -41,7 +41,7 @@ export default function AddressPage() {
     if (!user) return
 
     try {
-      const res = await fetch(`https://spesialsayurdb-production.up.railway.app/api/users/${user.id}`, {
+      const res = await fetch(`https://spesialsayurdb-production-b3b4.up.railway.app/api/users/${user.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

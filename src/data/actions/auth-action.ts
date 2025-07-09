@@ -1,4 +1,5 @@
 "use server";
+
 import { z } from "zod";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -17,7 +18,7 @@ const config = {
   secure: process.env.NODE_ENV === "production",
 };
 
-// ✅ schema lengkap: nomor_telepon tetap divalidasi sebagai string angka
+// ✅ TIDAK DIUBAH: SCHEMA REGISTER
 const schemaRegister = z.object({
   username: z.string().min(3).max(20, {
     message: "Username must be between 3 and 20 characters",
@@ -34,8 +35,8 @@ const schemaRegister = z.object({
     .regex(/^\d+$/, { message: "Nomor telepon hanya boleh angka" }),
 });
 
+// ✅ REGISTER USER ACTION
 export async function registerUserAction(prevState: any, formData: FormData) {
-  // debug helper
   console.log("FormData:", {
     username: formData.get("username"),
     password: formData.get("password"),
@@ -60,7 +61,6 @@ export async function registerUserAction(prevState: any, formData: FormData) {
     };
   }
 
-  // ✅ Only send base fields
   const registerResponse = await registerUserService({
     username: validated.data.username,
     password: validated.data.password,
@@ -69,16 +69,17 @@ export async function registerUserAction(prevState: any, formData: FormData) {
 
   console.log("Register Response:", registerResponse);
 
-  if (!registerResponse || registerResponse.error) {
+  if (!registerResponse || registerResponse.error || !registerResponse.user) {
+    console.error("Register failed:", registerResponse);
     return {
       ...prevState,
-      strapiErrors: registerResponse?.error?.message || "Gagal membuat akun.",
+      strapiErrors: registerResponse?.message || "Gagal register.",
       zodErrors: null,
-      message: "Gagal register.",
+      message: "Register failed.",
     };
   }
 
-  // ✅ Use updateUserAfterRegister to push custom fields
+  // ✅ Update tambahan field user (jika ada)
   await updateUserAfterRegister({
     userId: registerResponse.user.id,
     jwt: registerResponse.jwt,
@@ -88,24 +89,17 @@ export async function registerUserAction(prevState: any, formData: FormData) {
     point: 0,
   });
 
+  // ✅ Simpan JWT ke cookie
   const cookieStore = await cookies();
   cookieStore.set("jwt", registerResponse.jwt, config);
 
-  return {
-    success: true,
-    username: registerResponse.user.username,
-    userId: registerResponse.user.id,
-    redirectTo: "/dashboard"
-  };
+  redirect("/dashboard");
 }
 
+// ✅ SCHEMA LOGIN
 const schemaLogin = z.object({
-  identifier: z.string().min(3).max(20, {
-    message: "Identifier must have at least 3 or more characters",
-  }),
-  password: z.string().min(6).max(100, {
-    message: "Password must be between 6 and 100 characters",
-  }),
+  identifier: z.string().min(3).max(20),
+  password: z.string().min(6).max(100),
 });
 
 export async function loginUserAction(prevState: any, formData: FormData) {
@@ -127,7 +121,7 @@ export async function loginUserAction(prevState: any, formData: FormData) {
   if (!responseData || responseData.error) {
     return {
       ...prevState,
-      strapiErrors: responseData?.error,
+      strapiErrors: responseData?.error?.message || "Login failed",
       zodErrors: null,
       message: "Failed to Login.",
     };
@@ -136,13 +130,8 @@ export async function loginUserAction(prevState: any, formData: FormData) {
   const cookieStore = await cookies();
   cookieStore.set("jwt", responseData.jwt, config);
 
-  return {
-    ...prevState,
-    success: true,
-    redirectTo: "/dashboard",
-  };
+  redirect("/dashboard");
 }
-
 
 export async function logoutAction() {
   const cookieStore = await cookies();

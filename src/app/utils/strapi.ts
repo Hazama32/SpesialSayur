@@ -1,5 +1,5 @@
 export async function fetchProduk() {
-    const res = await fetch('https://spesialsayurdb-production.up.railway.app/api/produks?populate=*', {
+    const res = await fetch('https://spesialsayurdb-production-b3b4.up.railway.app/api/produks?populate=*', {
     cache: 'no-store',
 });
     const data = await res.json();
@@ -7,7 +7,7 @@ export async function fetchProduk() {
 }
 
 export async function fetchKategori() {
-    const res = await fetch('https://spesialsayurdb-production.up.railway.app/api/kategoris?populate=*', {
+    const res = await fetch('https://spesialsayurdb-production-b3b4.up.railway.app/api/kategoris?populate=*', {
     cache: 'no-store',
 });
     const data = await res.json();

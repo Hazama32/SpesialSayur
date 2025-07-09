@@ -13,7 +13,7 @@ export default function PembayaranPage() {
       const parsedUser = JSON.parse(storedUser)
 
       // Ambil data dari Strapi
-      fetch(`https://spesialsayurdb-production.up.railway.app/api/users/${parsedUser.id}`, {
+      fetch(`https://spesialsayurdb-production-b3b4.up.railway.app/api/users/${parsedUser.id}`, {
         headers: {
           Authorization: `Bearer ${parsedUser.jwt}`
         }

@@ -17,7 +17,7 @@ export function CartSync() {
       produks: item.produkId,
     }))
 
-    fetch("https://spesialsayurdb-production.up.railway.app/api/carts", {
+    fetch("https://spesialsayurdb-production-b3b4.up.railway.app/api/carts", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

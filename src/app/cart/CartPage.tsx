@@ -52,7 +52,7 @@ export default function CartPage() {
     }
 
     fetch(
-      'https://spesialsayurdb-production.up.railway.app/api/produks?populate=*'
+      'https://spesialsayurdb-production-b3b4.up.railway.app/api/produks?populate=*'
     )
       .then(res => res.json())
       .then(data => {
@@ -148,7 +148,7 @@ export default function CartPage() {
             {items.map(item => {
               const produk = item.produks
               const image = produk.gambar?.[0]?.url
-                ? `https://spesialsayurdb-production.up.railway.app${produk.gambar[0].url}`
+                ? `https://spesialsayurdb-production-b3b4.up.railway.app${produk.gambar[0].url}`
                 : '/noimage.png'
 
               const gram = parseInt(item.jumlah_pesanan)

@@ -21,7 +21,7 @@ export default function PaymentMethod({ selected, onChange, redirectOnSelect = f
 
     const user = JSON.parse(localStorage.getItem('user') || '{}')
     if (user?.id && user?.jwt) {
-      await fetch(`https://spesialsayurdb-production.up.railway.app/api/users/${user.id}`, {
+      await fetch(`https://spesialsayurdb-production-b3b4.up.railway.app/api/users/${user.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

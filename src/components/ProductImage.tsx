@@ -13,7 +13,7 @@ type ProductCardProps = {
 export default function ProductImage({ product }: ProductCardProps) {
 
   const imageUrl =
-    'https://spesialsayurdb-production.up.railway.app' + (product.gambar[0]?.url || '')
+    'https://spesialsayurdb-production-b3b4.up.railway.app' + (product.gambar[0]?.url || '')
 
   return (
     <div

@@ -10,7 +10,7 @@ export default function TrackingStatus() {
 
     if (!token) return
 
-    fetch('https://spesialsayurdb-production.up.railway.app/api/pesanans?sort=createdAt:desc&pagination[limit]=1', {
+    fetch('https://spesialsayurdb-production-b3b4.up.railway.app/api/pesanans?sort=createdAt:desc&pagination[limit]=1', {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())

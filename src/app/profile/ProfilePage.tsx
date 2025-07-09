@@ -19,7 +19,7 @@ export default function AccountPage() {
       setUser(parsedUser)
 
       // Fetch metode pembayaran dari Strapi
-      fetch(`https://spesialsayurdb-production.up.railway.app/api/users/${parsedUser.id}`, {
+      fetch(`https://spesialsayurdb-production-b3b4.up.railway.app/api/users/${parsedUser.id}`, {
         headers: {
           Authorization: `Bearer ${parsedUser.jwt}` // jika pakai token
         }
@@ -41,7 +41,7 @@ export default function AccountPage() {
     // Update ke Strapi
     if (user) {
       try {
-        await fetch(`https://spesialsayurdb-production.up.railway.app/api/users/${user.id}`, {
+        await fetch(`https://spesialsayurdb-production-b3b4.up.railway.app/api/users/${user.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

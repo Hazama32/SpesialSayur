@@ -33,7 +33,7 @@ export default function HomePage() {
       setIsLoggedIn(true)
     }
 
-    fetch('https://spesialsayurdb-production.up.railway.app/api/produks?populate=*')
+    fetch('https://spesialsayurdb-production-b3b4.up.railway.app/api/produks?populate=*')
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data.data)) {

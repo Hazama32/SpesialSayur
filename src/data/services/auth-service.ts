@@ -24,6 +24,7 @@ const baseUrl = getStrapiURL();
 
 export async function registerUserService(data: RegisterUserProps) {
   const url = new URL("/api/auth/local/register", baseUrl);
+  console.log("Register API URL:", url.toString());
 
   try {
     const res = await fetch(url.toString(), {
@@ -31,10 +32,13 @@ export async function registerUserService(data: RegisterUserProps) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data), // hanya username, email, password
+      body: JSON.stringify(data),
     });
 
-    return await res.json();
+    const result = await res.json();
+    console.log("registerUserService Response:", result);
+
+    return result;
   } catch (err) {
     console.error("Register error:", err);
     return null;
@@ -43,6 +47,7 @@ export async function registerUserService(data: RegisterUserProps) {
 
 export async function updateUserAfterRegister(data: UpdateUserProps) {
   const url = new URL(`/api/users/${data.userId}`, baseUrl);
+  console.log("Update User API URL:", url.toString());
 
   try {
     const res = await fetch(url.toString(), {
@@ -59,7 +64,10 @@ export async function updateUserAfterRegister(data: UpdateUserProps) {
       }),
     });
 
-    return await res.json();
+    const result = await res.json();
+    console.log("updateUserAfterRegister Response:", result);
+
+    return result;
   } catch (err) {
     console.error("Update user error:", err);
     return null;
@@ -68,6 +76,7 @@ export async function updateUserAfterRegister(data: UpdateUserProps) {
 
 export async function loginUserService(data: LoginUserProps) {
   const url = new URL("/api/auth/local", baseUrl);
+  console.log("Login API URL:", url.toString());
 
   try {
     const res = await fetch(url.toString(), {
@@ -78,7 +87,10 @@ export async function loginUserService(data: LoginUserProps) {
       body: JSON.stringify(data),
     });
 
-    return await res.json();
+    const result = await res.json();
+    console.log("loginUserService Response:", result);
+
+    return result;
   } catch (err) {
     console.error("Login error:", err);
     return null;

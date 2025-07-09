@@ -8,7 +8,7 @@ export default function HistoryPage() {
     const token = localStorage.getItem("token")
 
     const fetchHistory = async () => {
-      const res = await fetch("https://spesialsayurdb-production.up.railway.app/api/pesanans?sort=createdAt:desc&populate=*", {
+      const res = await fetch("https://spesialsayurdb-production-b3b4.up.railway.app/api/pesanans?sort=createdAt:desc&populate=*", {
         headers: { Authorization: `Bearer ${token}` }
       })
 

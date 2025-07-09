@@ -42,7 +42,7 @@ export default function HomePage() {
   const [activePopupId, setActivePopupId] = useState<number | null>(null) // 👉 untuk popup per card
 
   useEffect(() => {
-    fetch('https://spesialsayurdb-production.up.railway.app/api/produks?populate=*')
+    fetch('https://spesialsayurdb-production-b3b4.up.railway.app/api/produks?populate=*')
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data.data)) {
@@ -53,7 +53,7 @@ export default function HomePage() {
         console.error('Gagal fetch produk:', err)
       })
 
-    fetch('https://spesialsayurdb-production.up.railway.app/api/vouchers?populate=*')
+    fetch('https://spesialsayurdb-production-b3b4.up.railway.app/api/vouchers?populate=*')
       .then((res) => res.json())
       .then((data) => {
         const vouchers: VoucherItem[] = data.data || []
@@ -62,12 +62,12 @@ export default function HomePage() {
           .map((v) => {
             if (v?.banner?.formats?.small?.url) {
               return (
-                'https://spesialsayurdb-production.up.railway.app' +
+                'https://spesialsayurdb-production-b3b4.up.railway.app' +
                 v.banner.formats.small.url
               )
             } else if (v?.banner?.url) {
               return (
-                'https://spesialsayurdb-production.up.railway.app' +
+                'https://spesialsayurdb-production-b3b4.up.railway.app' +
                 v.banner.url
               )
             } else {

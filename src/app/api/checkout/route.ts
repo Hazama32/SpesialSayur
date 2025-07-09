@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
   console.log('✅ Forwarding body:', body)
 
   const res = await fetch(
-    'https://spesialsayurdb-production.up.railway.app/api/pesanans',
+    'https://spesialsayurdb-production-b3b4.up.railway.app/api/pesanans',
     {
       method: 'POST',
       headers: {

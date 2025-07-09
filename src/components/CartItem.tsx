@@ -23,7 +23,7 @@ type CartItemProps = {
 
 export default function CartItem({ item, onIncrement, onDecrement, onRemove }: CartItemProps) {
   const imageUrl = item.attributes.gambar?.data?.attributes?.url
-    ? `https://spesialsayurdb-production.up.railway.app${item.attributes.gambar.data.attributes.url}`
+    ? `https://spesialsayurdb-production-b3b4.up.railway.app${item.attributes.gambar.data.attributes.url}`
     : '/noimage.png'
 
   return (

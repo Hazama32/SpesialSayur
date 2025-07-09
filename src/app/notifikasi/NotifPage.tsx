@@ -21,7 +21,7 @@ export default function NotificationPage() {
     // Jika user tidak login, tidak fetch notifikasi
     if (!user?.id) return
 
-   fetch(`https://spesialsayurdb-production.up.railway.app/api/notifikasis?populate=*&filters[$or][0][pengguna][id][$eq]=${user.id}&filters[$or][1][pengguna][id][$null]=true&sort=time:desc`)
+   fetch(`https://spesialsayurdb-production-b3b4.up.railway.app/api/notifikasis?populate=*&filters[$or][0][pengguna][id][$eq]=${user.id}&filters[$or][1][pengguna][id][$null]=true&sort=time:desc`)
       .then((res) => res.json())
       .then((data) => {
         setNotifications(data.data)

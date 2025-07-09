@@ -9,7 +9,7 @@ export async function GET() {
   }
 
   const res = await fetch(
-    'https://spesialsayurdb-production.up.railway.app/api/users/me',
+    'https://spesialsayurdb-production-b3b4.up.railway.app/api/users/me',
     {
       headers: { Authorization: `Bearer ${jwt}` },
     }

@@ -6,5 +6,5 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function getStrapiURL() {
-  return process.env.NEXT_PUBLIC_STRAPI_URL ?? "https://spesialsayurdb-production.up.railway.app";
+  return process.env.NEXT_PUBLIC_STRAPI_URL ?? "https://spesialsayurdb-production-b3b4.up.railway.app";
 }

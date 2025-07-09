@@ -10,7 +10,7 @@ interface RegisterData {
 }
 
 export async function login({ identifier, password }: LoginData) {
-  const res = await fetch("https://spesialsayurdb-production.up.railway.app/api/auth/local", {
+  const res = await fetch("https://spesialsayurdb-production-b3b4.up.railway.app/api/auth/local", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ identifier, password }),
@@ -19,7 +19,7 @@ export async function login({ identifier, password }: LoginData) {
 }
 
 export async function register({ username, email, password }: RegisterData) {
-  const res = await fetch("https://spesialsayurdb-production.up.railway.app/api/auth/local/register", {
+  const res = await fetch("https://spesialsayurdb-production-b3b4.up.railway.app/api/auth/local/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, email, password }),

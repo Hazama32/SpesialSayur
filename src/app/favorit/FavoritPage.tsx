@@ -28,7 +28,7 @@ export default function FavoritePage() {
     const fetchProduk = async () => {
       const query = ids.map((id) => `filters[id][$in]=${id}`).join("&")
       const res = await fetch(
-        `https://spesialsayurdb-production.up.railway.app/api/produks?populate=*`
+        `https://spesialsayurdb-production-b3b4.up.railway.app/api/produks?populate=*`
       )
       const data = await res.json()
 

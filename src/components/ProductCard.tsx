@@ -8,11 +8,7 @@ import {
   saveToLocalFavorites,
   removeFromLocalFavorites,
 } from '@/lib/favStorage'
-<<<<<<< HEAD
-import GramasiPopup from './GramasiPopup'
-=======
 import { useRouter } from 'next/navigation'
->>>>>>> 400631711dba366f8bfb276ec65293cca7009b63
 
 type ProductCardProps = {
   product: {
@@ -26,14 +22,6 @@ type ProductCardProps = {
   setActivePopupId: (id: number | null) => void
 }
 
-<<<<<<< HEAD
-export default function ProductCard({ product }: ProductCardProps) {
-  const [isFavorite, setIsFavorite] = useState(() =>
-    getLocalFavorites().some((fav) => fav.produkId === product.id)
-  )
-  const [jumlahPesanan, setJumlahPesanan] = useState(250) // default gram
-  const [showDropdown, setShowDropdown] = useState(false)
-=======
 export default function ProductCard({
   product,
   activePopupId,
@@ -48,9 +36,10 @@ export default function ProductCard({
   const [notificationMessage, setNotificationMessage] = useState('')
 
   const isPopupOpen = activePopupId === product.id
->>>>>>> 400631711dba366f8bfb276ec65293cca7009b63
 
-  const hargaPerKg = Number(product.harga_kiloan)
+  const imageUrl =
+    'https://spesialsayurdb-production.up.railway.app' +
+    (product.gambar[0]?.url || '')
 
   const toggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -72,8 +61,6 @@ export default function ProductCard({
     setActivePopupId(isPopupOpen ? null : product.id)
   }
 
-<<<<<<< HEAD
-=======
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation()
     const harga = Number(product.harga_kiloan)
@@ -85,7 +72,6 @@ export default function ProductCard({
     setTimeout(() => setShowNotification(false), 3000)
   }
 
->>>>>>> 400631711dba366f8bfb276ec65293cca7009b63
   const handleSelectGram = (gram: number) => {
     setJumlahPesanan(gram)
     setActivePopupId(null)
@@ -94,33 +80,18 @@ export default function ProductCard({
   const handleInputKg = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = parseFloat(e.target.value)
     if (!isNaN(val) && val >= 0.25) {
-<<<<<<< HEAD
-      setJumlahPesanan(Math.round(val * 1000)) // simpan ke gram
-=======
       setJumlahPesanan(Math.round(val * 1000))
       setActivePopupId(null)
     } else if (e.target.value === '') {
       setJumlahPesanan(0)
->>>>>>> 400631711dba366f8bfb276ec65293cca7009b63
     }
   }
 
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    const subtotal = (hargaPerKg / 1000) * jumlahPesanan
-    saveToLocalCart(product.id, jumlahPesanan, hargaPerKg)
-    alert(
-      `Ditambahkan ke keranjang:\n${jumlahPesanan >= 1000 ? jumlahPesanan / 1000 + ' kg' : jumlahPesanan + ' gr'}\nSubtotal: Rp ${Math.ceil(subtotal).toLocaleString()}`
-    )
+  const handleCardClick = () => {
+    router.push(`/produk/${product.slug}`)
   }
 
-  const imageUrl = `https://spesialsayurdb-production.up.railway.app${product.gambar[0]?.url || ''}`
-
   return (
-<<<<<<< HEAD
-    <div className="relative bg-white rounded-xl shadow p-3 cursor-pointer h-64 w-full">
-      {/* Favorite */}
-=======
     <div
       className="relative bg-white rounded-xl shadow-lg p-3 cursor-pointer flex flex-col justify-between h-auto overflow-hidden transform transition-transform duration-200 hover:scale-105"
       onClick={handleCardClick}
@@ -133,7 +104,6 @@ export default function ProductCard({
       )}
 
       {/* Favorite Button */}
->>>>>>> 400631711dba366f8bfb276ec65293cca7009b63
       <button
         onClick={toggleFavorite}
         className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-md z-20 focus:outline-none focus:ring-2 focus:ring-red-500 transition-all duration-200 hover:scale-110"
@@ -152,18 +122,11 @@ export default function ProductCard({
         className="w-full h-32 object-cover rounded-lg mb-3"
       />
 
-<<<<<<< HEAD
-      <div className="p-2">
-        <h2 className="text-sm font-medium">{product.nama_produk}</h2>
-        <p className="text-green-600 font-semibold text-sm">
-          Rp {hargaPerKg} / kg
-=======
       {/* Product Info */}
       <div className="p-2 flex-grow">
         <h2 className="text-base font-semibold text-gray-800 mb-1">{product.nama_produk}</h2>
         <p className="text-green-600 font-bold text-lg">
           Rp {product.harga_kiloan} / gram
->>>>>>> 400631711dba366f8bfb276ec65293cca7009b63
         </p>
       </div>
 
@@ -181,18 +144,6 @@ export default function ProductCard({
             {isPopupOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
           </button>
 
-<<<<<<< HEAD
-        <input
-          type="number"
-          step="0.01"
-          min="0.25"
-          placeholder="kg"
-          onChange={handleInputKg}
-          value={jumlahPesanan >= 1000 ? (jumlahPesanan / 1000).toFixed(2) : ''}
-          className="border p-1 rounded w-16 text-sm text-center"
-        />
-        <span className="text-sm">kg</span>
-=======
           {isPopupOpen && (
             <div
               className="absolute bottom-full left-0 mb-2 z-50 w-full bg-white p-2 rounded-lg shadow-xl grid grid-cols-2 gap-2 transform transition-all duration-200 origin-bottom scale-y-100 opacity-100"
@@ -227,7 +178,6 @@ export default function ProductCard({
             </div>
           )}
         </div>
->>>>>>> 400631711dba366f8bfb276ec65293cca7009b63
 
         {/* Add to Cart Button */}
         <button

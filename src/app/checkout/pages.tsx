@@ -27,7 +27,7 @@ export default function CheckoutPage() {
   const router = useRouter()
 
   useEffect(() => {
-    fetch('https://spesialsayurdb-production.up.railway.app/api/carts?populate=produk')
+    fetch('https://spesialsayurdb-production-b3b4.up.railway.app/api/carts?populate=produk')
       .then((res) => res.json())
       .then((data) => setItems(data.data))
       .catch((err) => console.error('Gagal fetch cart dari Strapi:', err))
@@ -52,7 +52,7 @@ export default function CheckoutPage() {
         })),
       }
 
-      const res = await fetch('https://spesialsayurdb-production.up.railway.app/api/pesanans', {
+      const res = await fetch('https://spesialsayurdb-production-b3b4.up.railway.app/api/pesanans', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
