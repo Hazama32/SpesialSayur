@@ -19,6 +19,8 @@ type ProductItem = {
   deskripsi: string
   harga_kiloan: string
   gambar: any[]
+  is_special_offer?: boolean
+  offer_ends_at?: string
 }
 
 type VoucherItem = {
@@ -36,22 +38,30 @@ type VoucherItem = {
 
 export default function HomePage() {
   const [products, setProducts] = useState<ProductItem[]>([])
+  const [specialOffers, setSpecialOffers] = useState<ProductItem[]>([])
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('All')
   const [bannerList, setBannerList] = useState<string[]>([])
-  const [activePopupId, setActivePopupId] = useState<number | null>(null) // 👉 untuk popup per card
+  const [activePopupId, setActivePopupId] = useState<number | null>(null)
+  const username = typeof window !== 'undefined' ? localStorage.getItem('username') : ''
 
   useEffect(() => {
     fetch('https://spesialsayurdb-production-b3b4.up.railway.app/api/produks?populate=*')
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data.data)) {
+          const now = new Date()
+          const specials = data.data.filter(
+            (p: ProductItem) =>
+              p.is_special_offer &&
+              p.offer_ends_at &&
+              new Date(p.offer_ends_at) > now
+          )
+          setSpecialOffers(specials)
           setProducts(data.data)
         }
       })
-      .catch((err) => {
-        console.error('Gagal fetch produk:', err)
-      })
+      .catch((err) => console.error('Gagal fetch produk:', err))
 
     fetch('https://spesialsayurdb-production-b3b4.up.railway.app/api/vouchers?populate=*')
       .then((res) => res.json())
@@ -59,28 +69,18 @@ export default function HomePage() {
         const vouchers: VoucherItem[] = data.data || []
         const activeBanners = vouchers
           .filter((v) => v?.status_voucher === true)
-          .map((v) => {
-            if (v?.banner?.formats?.small?.url) {
-              return (
-                'https://spesialsayurdb-production-b3b4.up.railway.app' +
-                v.banner.formats.small.url
-              )
-            } else if (v?.banner?.url) {
-              return (
-                'https://spesialsayurdb-production-b3b4.up.railway.app' +
-                v.banner.url
-              )
-            } else {
-              return null
-            }
-          })
-          .filter((url) => url !== null) as string[]
+          .map((v) =>
+            v?.banner?.formats?.small?.url
+              ? 'https://spesialsayurdb-production-b3b4.up.railway.app' + v.banner.formats.small.url
+              : v?.banner?.url
+              ? 'https://spesialsayurdb-production-b3b4.up.railway.app' + v.banner.url
+              : null
+          )
+          .filter(Boolean) as string[]
 
         setBannerList(activeBanners)
       })
-      .catch((err) => {
-        console.error('Gagal fetch voucher:', err)
-      })
+      .catch((err) => console.error('Gagal fetch voucher:', err))
   }, [])
 
   const filteredProducts = products.filter((item) => {
@@ -93,7 +93,6 @@ export default function HomePage() {
   })
 
   const categories = ['All', 'Sayur', 'Buah']
-  const username = localStorage.getItem('username')
 
   return (
     <div className="min-h-screen bg-gray-300 pb-16">
@@ -110,9 +109,7 @@ export default function HomePage() {
             <LogoutButton />
           </div>
         </div>
-
         <p className="text-lg mx-2">Selamat Datang {username}</p>
-
         <div className="mt-3">
           <input
             type="text"
@@ -126,14 +123,14 @@ export default function HomePage() {
 
       <div className="h-4" />
 
-      {/* BANNER CAROUSEL */}
+      {/* BANNER */}
       <div className="px-4">
         {bannerList.length > 0 ? (
           <Swiper
             modules={[Autoplay, Pagination]}
             autoplay={{ delay: 3000, disableOnInteraction: false }}
             pagination={{ clickable: true }}
-            loop={true}
+            loop
             className="w-full h-40 rounded-lg shadow overflow-hidden"
           >
             {bannerList.map((url, idx) => (
@@ -162,9 +159,7 @@ export default function HomePage() {
             key={cat}
             onClick={() => setCategory(cat)}
             className={`px-4 py-1 rounded-full whitespace-nowrap text-sm ${
-              category === cat
-                ? 'bg-green-800 text-white'
-                : 'bg-gray-200 text-gray-700'
+              category === cat ? 'bg-green-800 text-white' : 'bg-gray-200 text-gray-700'
             }`}
           >
             {cat}
@@ -172,22 +167,45 @@ export default function HomePage() {
         ))}
       </div>
 
-      {/* PRODUK */}
-      <div className="p-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-black">
-        {filteredProducts.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            activePopupId={activePopupId}
-            setActivePopupId={setActivePopupId}
-          />
-        ))}
+      {/* SPECIAL OFFERS */}
+      {specialOffers.length > 0 && (
+        <div className="mt-6 px-4">
+          <h2 className="text-xl font-bold text-green-700 mb-3">Special Offer</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {specialOffers.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                activePopupId={activePopupId}
+                setActivePopupId={setActivePopupId}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* SEMUA PRODUK */}
+      <div className="mt-6 px-4">
+        <h2 className="text-xl font-bold text-green-700 mb-3">Semua Produk</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-black">
+          {filteredProducts.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              activePopupId={activePopupId}
+              setActivePopupId={setActivePopupId}
+            />
+          ))}
+        </div>
       </div>
 
+      {/* Spacer */}
+      <div className="h-[100px]" />
+
       {/* FOOTER */}
-      <div className="h-8 pt-8 text-center text-sm text-gray-600">
+      <footer className="text-center text-sm text-gray-600 py-4">
         <p>&copy; 2025 Spesial Sayur. All rights reserved.</p>
-      </div>
+      </footer>
     </div>
   )
 }
