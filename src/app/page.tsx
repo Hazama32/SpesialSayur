@@ -82,7 +82,7 @@ export default function HomePage() {
               {/* Logo dan Menu */}
               <div className="flex justify-between items-center p-4">
                 <div className="flex items-center gap-2">
-                  <img src="/logos.png" alt="Logo" className="w-24 h-24" />
+                  <img src="/logos.png" alt="Logo" className="w-16 h-16" />
                   <h1 className="text-xl font-bold text-white">Spesial Sayur</h1>
                 </div>
                 <div className="flex gap-2 text-sm text-white">
@@ -102,7 +102,7 @@ export default function HomePage() {
                 </p>
 
                 {/* Search Bar */}
-                <div className="flex items-center bg-white rounded-full px-4 py-2 w-72 md:w-96 shadow">
+                <div className="flex items-center bg-white rounded-full px-4 py-2 w-72 md:w-96 shadow mb-4">
                   <input
                     type="text"
                     placeholder="Cari produk..."

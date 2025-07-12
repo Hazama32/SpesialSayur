@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+.swiper-pagination-bullet {
+  background-color: #ffffff9f !important;
+  opacity: 1 !important;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: #00FF00 !important;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

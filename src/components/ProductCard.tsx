@@ -38,7 +38,7 @@ export default function ProductCard({
   const isPopupOpen = activePopupId === product.id
 
   const imageUrl =
-    'https://spesialsayurdb-production.up.railway.app' +
+    'https://spesialsayurdb-production-b3b4.up.railway.app' +
     (product.gambar[0]?.url || '')
 
   const toggleFavorite = (e: React.MouseEvent) => {
